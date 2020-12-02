@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DietaNoDietaApi.Authentication;
+using DietaNoDietaApi.MySql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,44 +31,30 @@ namespace DietaNoDietaApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            
-            //Entityframework
-            services.AddDbContext<ApplicationDbContext>(option=>option.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
-            //For identity 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
-                    .AddDefaultTokenProviders();
-            //Adding authentication
-            services.AddAuthentication(options =>
+            String connStr = Configuration.GetConnectionString("");
+    //"ConnStr": "Data Source=DESKTOP-KUU8T4L\\MYDATABASE;Initial Catalog=DietaNoDieta;Integrated Security=True"
+            services.AddDbContext<MySqlDbContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:ConnStr"]));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = Configuration["Jwt:Issuer"],
+            ValidAudience = Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecretKey"])),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+            services.AddAuthorization(config =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            //Adding JWT Bearer
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = true;
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience= true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:ValidIssuer"]))
-                };
-            });
-            //Adding swager
-            services.AddSwaggerGen(setup => {
-                setup.SwaggerDoc(
-                    "v1",
-                    new Microsoft.OpenApi.Models.OpenApiInfo {
-
-                        Title = "Dieta No Dieta Api By Luqman Ahmed",
-                        Version = "v1"
-                    }
-                    );
+                config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
+                config.AddPolicy(Policies.User, Policies.UserPolicy());
             });
         }
 
@@ -81,18 +67,14 @@ namespace DietaNoDietaApi
             }
 
             app.UseRouting();
-
-                      //  app.UseAuthentication();//from comments
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-            app.UseSwagger();
-            app.UseSwaggerUI(x=> {
-                x.SwaggerEndpoint("/swagger/v1/swagger.json", "Dieta No Dieta Api By Luqman Ahmed");
-            });
+
         }
     }
 }

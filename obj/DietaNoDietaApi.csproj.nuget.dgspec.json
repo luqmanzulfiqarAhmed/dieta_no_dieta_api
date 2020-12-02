@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\luqma\\source\\repos\\DietaNoDietaApi\\DietaNoDietaApi.csproj": {}
+    "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\DietaNoDietaApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\luqma\\source\\repos\\DietaNoDietaApi\\DietaNoDietaApi.csproj": {
+    "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\DietaNoDietaApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\luqma\\source\\repos\\DietaNoDietaApi\\DietaNoDietaApi.csproj",
+        "projectUniqueName": "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\DietaNoDietaApi.csproj",
         "projectName": "DietaNoDietaApi",
-        "projectPath": "C:\\Users\\luqma\\source\\repos\\DietaNoDietaApi\\DietaNoDietaApi.csproj",
+        "projectPath": "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\DietaNoDietaApi.csproj",
         "packagesPath": "C:\\Users\\luqma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\luqma\\source\\repos\\DietaNoDietaApi\\obj\\",
+        "outputPath": "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\luqma\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -48,29 +48,17 @@
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[3.1.5, )"
-            },
-            "Microsoft.AspNetCore.Identity": {
-              "target": "Package",
-              "version": "[2.2.0, )"
-            },
-            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[3.1.10, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[3.1.5, )"
+              "version": "[3.1.10, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
               "version": "[3.1.5, )"
-            },
-            "Nancy": {
-              "target": "Package",
-              "version": "[2.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
