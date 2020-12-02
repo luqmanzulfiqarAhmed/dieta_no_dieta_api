@@ -70,7 +70,7 @@ namespace EF_DietaNoDietaApi.Controllers
             if (user.isVeified == "true" )
             {
                 String token = GenerateJWTToken(user);
-                return Ok(new { Status = "200", Message = "User registered Successfully",Profile = user, Token = token });
+                return Ok(new { Status = "200", Message = "User Logged in Successfully",Profile = user, Token = token });
             }
 
             return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Not verified by admin" });
