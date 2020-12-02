@@ -32,7 +32,7 @@ namespace EF_DietaNoDietaApi.Controllers
         }
         [HttpGet]
         [Route("Food/Search")]
-        [Authorize(Policy = Policies.User)]
+        //[Authorize(Policy = Policies.User)]
         public async Task<IActionResult> foodSearch([FromBody] FatSecretAccessToken item)
         {
             HttpClient client = new HttpClient();
