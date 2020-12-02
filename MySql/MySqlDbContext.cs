@@ -1,16 +1,22 @@
-﻿using DietaNoDietaApi.Model;
+﻿using EF_DietaNoDietaApi.Model;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+ 
 
-namespace DietaNoDietaApi.MySql
+namespace EF_DietaNoDietaApi.MySql
 {
     public class MySqlDbContext : DbContext
     {
-        public MySqlDbContext( DbContextOptions options) : base(options)
+
+        public MySqlDbContext() { 
+        
+        }
+        public MySqlDbContext( DbContextOptions<MySqlDbContext> options) : base(options)
         {
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //modelBuilder.Ignore<UserModel>();
+            modelBuilder.Entity<UserModel>().HasKey(b => b.email);
         }
         public DbSet<UserModel> Users { get; set; }
     }

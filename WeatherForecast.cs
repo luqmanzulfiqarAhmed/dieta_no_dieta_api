@@ -1,6 +1,6 @@
 using System;
 
-namespace DietaNoDietaApi
+namespace EF_DietaNoDietaApi
 {
     public class WeatherForecast
     {

@@ -1,22 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using DietaNoDietaApi.MySql;
+using EF_DietaNoDietaApi.MySql;
+using EF_DietaNoDietaApi.Repositry;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
-namespace DietaNoDietaApi
+namespace EF_DietaNoDietaApi
 {
     public class Startup
     {
@@ -32,8 +27,9 @@ namespace DietaNoDietaApi
         {
             services.AddControllers();
             String connStr = Configuration.GetConnectionString("");
-    //"ConnStr": "Data Source=DESKTOP-KUU8T4L\\MYDATABASE;Initial Catalog=DietaNoDieta;Integrated Security=True"
+            //"ConnStr": "Data Source=DESKTOP-KUU8T4L\\MYDATABASE;Initial Catalog=DietaNoDieta;Integrated Security=True"
             services.AddDbContext<MySqlDbContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:ConnStr"]));
+            //services.AddTransient<IRepositry,UserRepositry>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -58,6 +54,7 @@ namespace DietaNoDietaApi
             });
         }
 
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -67,14 +64,13 @@ namespace DietaNoDietaApi
             }
 
             app.UseRouting();
-            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
         }
     }
 }

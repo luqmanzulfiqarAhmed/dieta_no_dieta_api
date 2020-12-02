@@ -1,54 +1,100 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-//using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using DietaNoDietaApi.Authentication;
-using DietaNoDietaApi.Model;
-using Microsoft.AspNetCore.Authorization;
+using EF_DietaNoDietaApi.Model;
+using EF_DietaNoDietaApi.MySql;
+using EF_DietaNoDietaApi.Repositry;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 //using Microsoft.IdentityModel.Tokens;
-using Microsoft.IdentityModel.Tokens;
 
 
-namespace DietaNoDietaApi.Controllers
+namespace EF_DietaNoDietaApi.Controllers
 {
     [Route("api/Authenticate")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly IConfiguration _configuration;
+                
+        private readonly IConfiguration _config;
+        private readonly MySqlDbContext dbContext;
 
-        public AuthenticationController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthenticationController(MySqlDbContext context, IConfiguration configuration)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.roleManager = roleManager;
-            _configuration = configuration;
+
+            dbContext = context;
+            _config = configuration;
         }
 
         [HttpPost]
-        [Route("Register")]
+        [Route("Register")]//http://localhost:5000/api/Authenticate/Register
         public async Task<IActionResult> register([FromBody] UserModel user)
         {
-            user.isVeified = true;
+            //var found =  dbContext.Users.First(x=> x.email == user.email);
+            var found = dbContext.Users.FindAsync(user.email);            
+            if (found.Result != null)
+                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User with this Email already exist" });
+            user.isVeified = "true";
+            await dbContext.Users.AddAsync(user);
+            int num = await dbContext.SaveChangesAsync();
+            if (num != 0)
+                return Ok(new Response { Status = "200", Message = "User registered Successfully" });
+                
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "User could not register" });
 
+         
+        }
+        [HttpGet]
+        [Route("test")]
+        public IEnumerable<UserModel> get() {
 
-            return null; 
+            return dbContext.Users.ToList();
         }
 
+        [HttpPost]
+        [Route("Login")]////http://localhost:5000/api/Authenticate/Login
+        public async Task<IActionResult> login([FromBody] LoginModel login)
+        {
+            var found = dbContext.Users.FindAsync(login.email);
+            if (found.Result == null) {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "400", Message = "User with this email or password not found" });
+            }
+            UserModel user=  found.Result;
+            if (user.isVeified == "true" )
+            {
+                String token = GenerateJWTToken(user);
+                return Ok(new { Status = "200", Message = "User registered Successfully",Profile = user, Token = token });
+            }
 
+            return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Not verified by admin" });
+        }
+        String GenerateJWTToken(UserModel userInfo)
+        {
+            var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
+            var credentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, userInfo.email),            
+            new Claim("role",userInfo.UserRole),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+            var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(30),
+            signingCredentials: credentials
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
 
-
+        }
 
 
 

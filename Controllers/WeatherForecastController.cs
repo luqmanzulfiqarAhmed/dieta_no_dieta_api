@@ -6,15 +6,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using DietaNoDietaApi.Model;
-using Microsoft.AspNetCore.Authorization;
+using EF_DietaNoDietaApi.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-
-namespace DietaNoDietaApi.Controllers
+namespace EF_DietaNoDietaApi.Controllers
 {
     //[Authorize]
     [ApiController]

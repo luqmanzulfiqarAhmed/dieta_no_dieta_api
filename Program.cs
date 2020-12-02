@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace DietaNoDietaApi
+namespace EF_DietaNoDietaApi
 {
     public class Program
     {

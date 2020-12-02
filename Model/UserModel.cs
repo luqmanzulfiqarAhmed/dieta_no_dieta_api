@@ -4,11 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DietaNoDietaApi.Model
+namespace EF_DietaNoDietaApi.Model
 {
+
+    
     public class UserModel
     {
         [Required(ErrorMessage = "Email is required")]
+        [Key]        
         public String email { get; set; }
 
 
@@ -16,7 +19,7 @@ namespace DietaNoDietaApi.Model
         public String phoneNumber { get; set; }
 
         
-        public bool isVeified { get; set; }
+        public String isVeified { get; set; }
 
         public String password { get; set; }
 

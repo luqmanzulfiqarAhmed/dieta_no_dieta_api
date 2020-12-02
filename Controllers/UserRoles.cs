@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DietaNoDietaApi.Controllers
+namespace EF_DietaNoDietaApi.Controllers
 {
     public static class UserRoles
     {
