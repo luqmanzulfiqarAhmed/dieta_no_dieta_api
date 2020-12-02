@@ -11,6 +11,7 @@ using EF_DietaNoDietaApi.MySql;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 
 namespace EF_DietaNoDietaApi.Controllers
