@@ -17,6 +17,7 @@ namespace EF_DietaNoDietaApi.Controllers
 {
     [Route("api/FatSecret")]
     [ApiController]
+    [Authorize(Policy = Policies.User)]
     public class FatSecretController : ControllerBase
     {
         private readonly IConfiguration _config;
