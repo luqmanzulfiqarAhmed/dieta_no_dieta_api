@@ -11,12 +11,14 @@ using EF_DietaNoDietaApi.MySql;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 
 namespace EF_DietaNoDietaApi.Controllers
 {
     [Route("api/FatSecret")]
     [ApiController]
+    
     public class FatSecretController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -30,6 +32,7 @@ namespace EF_DietaNoDietaApi.Controllers
         }
         [HttpGet]
         [Route("Food/Search")]
+        //[Authorize(Policy = Policies.User)]
         public async Task<IActionResult> foodSearch([FromBody] FatSecretAccessToken item)
         {
             HttpClient client = new HttpClient();
