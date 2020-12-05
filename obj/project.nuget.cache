@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "984SCCgLYq4VTmmMhM0L10XpXQoWIY8WTAE2jFgw3x7bqZkIVcv1lPkg6n7NH1oFWMJUhH5QA/Th81VITVS/jA==",
+  "dgSpecHash": "WdZZBshwwDaJr+4jQN3i6G6eLgNoNQhcuViuIZcire1lv7m8ChAyLT5lOpLvgTI0Ee1wxmPYvkBnKXLZaH4BNQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\luqma\\source\\repos\\EF_DietaNoDietaApi\\EF_DietaNoDietaApi.csproj",
+  "projectFilePath": "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\EF_DietaNoDietaApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\luqma\\.nuget\\packages\\microsoft.aspnet.webapi.client\\4.0.20710\\microsoft.aspnet.webapi.client.4.0.20710.nupkg.sha512",
     "C:\\Users\\luqma\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.10\\microsoft.aspnetcore.authentication.jwtbearer.3.1.10.nupkg.sha512",

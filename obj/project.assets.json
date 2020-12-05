@@ -5445,11 +5445,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\luqma\\source\\repos\\EF_DietaNoDietaApi\\EF_DietaNoDietaApi.csproj",
+      "projectUniqueName": "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\EF_DietaNoDietaApi.csproj",
       "projectName": "EF_DietaNoDietaApi",
-      "projectPath": "C:\\Users\\luqma\\source\\repos\\EF_DietaNoDietaApi\\EF_DietaNoDietaApi.csproj",
+      "projectPath": "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\EF_DietaNoDietaApi.csproj",
       "packagesPath": "C:\\Users\\luqma\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\luqma\\source\\repos\\EF_DietaNoDietaApi\\obj\\",
+      "outputPath": "C:\\Users\\luqma\\Videos\\dietApi\\dieta_no_dieta_api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\luqma\\AppData\\Roaming\\NuGet\\NuGet.Config",
