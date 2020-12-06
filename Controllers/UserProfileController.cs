@@ -43,7 +43,7 @@ namespace EF_DietaNoDietaApi.Controllers
                 result = dbContext.Users.Where(p => p.UserRole == UserRoles.User && p.isVeified == "false");
                 return StatusCode(StatusCodes.Status200OK, result);
             }
-            else if (item == 3)//get all not verified users
+            else if (item == 3)//get all not waiting users
             {
                 result = dbContext.Users.Where(p => p.UserRole == UserRoles.User && p.isVeified == "waiting");
                 return StatusCode(StatusCodes.Status200OK, result);
@@ -55,12 +55,10 @@ namespace EF_DietaNoDietaApi.Controllers
         [HttpPut]
         [Route("updateRequest")]
         //authorize this method for admin only
-        public async Task<IActionResult> updateRequest([FromBody] UserModel user,[FromQuery] String request) {
-            var found = dbContext.Users.FindAsync(user.email);
+        public async Task<IActionResult> updateRequest([FromQuery] String email,[FromQuery] String request) {
+            var found = dbContext.Users.FindAsync(email);
             UserModel result = found.Result;
-            if (user.password != result.password) {
-                return StatusCode(StatusCodes.Status401Unauthorized, new Response { Status = "401", Message = "Incorect Password" });
-            }
+
             if (result == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "User with this email not found" });
@@ -68,7 +66,7 @@ namespace EF_DietaNoDietaApi.Controllers
             result.isVeified = request;
             dbContext.Users.Update(result);
             await dbContext.SaveChangesAsync();
-            return StatusCode(StatusCodes.Status200OK,result);
+            return StatusCode(StatusCodes.Status200OK, new Response { Status = "200", Message = "Status Changed Successfully!" });
         }
 
         [HttpPut]
