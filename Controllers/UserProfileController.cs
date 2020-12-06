@@ -66,7 +66,7 @@ namespace EF_DietaNoDietaApi.Controllers
             result.isVeified = request;
             dbContext.Users.Update(result);
             await dbContext.SaveChangesAsync();
-            return StatusCode(StatusCodes.Status200OK,result);
+            return StatusCode(StatusCodes.Status200OK,new Response { Status = "200", Message = "Status Changed Successfully!" });
         }
 
         [HttpPut]
