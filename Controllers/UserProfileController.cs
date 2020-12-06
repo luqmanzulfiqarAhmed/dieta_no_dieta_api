@@ -58,9 +58,7 @@ namespace EF_DietaNoDietaApi.Controllers
         public async Task<IActionResult> updateRequest([FromBody] UserModel user,[FromQuery] String request) {
             var found = dbContext.Users.FindAsync(user.email);
             UserModel result = found.Result;
-            if (user.password != result.password) {
-                return StatusCode(StatusCodes.Status401Unauthorized, new Response { Status = "401", Message = "Incorect Password" });
-            }
+            
             if (result == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "User with this email not found" });
