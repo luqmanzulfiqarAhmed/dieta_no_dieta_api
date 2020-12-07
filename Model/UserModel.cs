@@ -29,5 +29,8 @@ namespace EF_DietaNoDietaApi.Model
         [Required(ErrorMessage = "Fitness level is required")]
         public String fitnessLevel { get; set; }
 
+        
+        public String date { get; set; }
+
     }
 }

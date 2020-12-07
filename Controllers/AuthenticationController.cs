@@ -40,7 +40,7 @@ namespace EF_DietaNoDietaApi.Controllers
             var found = dbContext.Users.FindAsync(user.email);            
             if (found.Result != null)
                 return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User with this Email already exist" });
-            user.isVeified = "true";
+            user.isVeified = "waiting";
             await dbContext.Users.AddAsync(user);
             int num = await dbContext.SaveChangesAsync();
             if (num != 0)
@@ -64,8 +64,13 @@ namespace EF_DietaNoDietaApi.Controllers
         {
             var found = dbContext.Users.FindAsync(login.email);
             if (found.Result == null) {
-                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "400", Message = "User with this email or password not found" });
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "400", Message = "User with this email not found" });
             }
+            if (found.Result.password != login.password)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Wrong Password" });
+            }
+
             UserModel user=  found.Result;
             if (user.isVeified == "true" )
             {
