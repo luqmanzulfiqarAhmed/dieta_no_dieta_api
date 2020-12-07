@@ -11,7 +11,7 @@ namespace EF_DietaNoDietaApi.Migrations
                 columns: table => new
                 {
                     email = table.Column<string>(nullable: false),
-                    fullName = table.Column<string>(nullable: true),
+                    fullName = table.Column<string>(nullable: false),
                     phoneNumber = table.Column<string>(nullable: false),
                     isVeified = table.Column<string>(nullable: true),
                     password = table.Column<string>(nullable: true),

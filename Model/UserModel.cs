@@ -11,11 +11,11 @@ namespace EF_DietaNoDietaApi.Model
     public class UserModel
     {
         [Required(ErrorMessage = "Email is required")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid email address")]
         [Key]        
         public String email { get; set; }
 
-        [Required(ErrorMessage = "Full Name is required")]
-        [Key]
+        [Required(ErrorMessage = "Full Name is required")]        
         public String fullName { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
