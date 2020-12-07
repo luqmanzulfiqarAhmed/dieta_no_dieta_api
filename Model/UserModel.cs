@@ -14,6 +14,9 @@ namespace EF_DietaNoDietaApi.Model
         [Key]        
         public String email { get; set; }
 
+        [Required(ErrorMessage = "Full Name is required")]
+        [Key]
+        public String fullName { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
         public String phoneNumber { get; set; }
@@ -29,8 +32,9 @@ namespace EF_DietaNoDietaApi.Model
         [Required(ErrorMessage = "Fitness level is required")]
         public String fitnessLevel { get; set; }
 
-        
+        [Required(ErrorMessage = "Date is required")]
         public String date { get; set; }
-
+        [Required(ErrorMessage = "Address is required")]
+        public String address { get; set; }
     }
 }
