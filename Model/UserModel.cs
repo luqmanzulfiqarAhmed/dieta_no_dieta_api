@@ -34,7 +34,7 @@ namespace EF_DietaNoDietaApi.Model
 
         [Required(ErrorMessage = "Date is required")]
         public String date { get; set; }
-        [Required(ErrorMessage = "Address is required")]
+        
         public String address { get; set; }
     }
 }
