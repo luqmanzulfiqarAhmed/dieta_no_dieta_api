@@ -30,7 +30,7 @@ namespace EF_DietaNoDietaApi.Controllers
             dbContext = context;
             _config = configuration;
         }
-        [HttpGet]
+        [HttpPost]
         [Route("Food/Search")]
         //[Authorize(Policy = Policies.User)]
         public async Task<IActionResult> foodSearch([FromBody] FatSecretAccessToken item)
