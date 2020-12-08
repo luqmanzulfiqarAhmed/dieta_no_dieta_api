@@ -18,7 +18,7 @@ namespace EF_DietaNoDietaApi.Migrations
                     UserRole = table.Column<string>(nullable: false),
                     fitnessLevel = table.Column<string>(nullable: false),
                     date = table.Column<string>(nullable: false),
-                    address = table.Column<string>(nullable: false)
+                    address = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
