@@ -41,6 +41,7 @@ namespace EF_DietaNoDietaApi.Controllers
             if (found.Result != null)
                 return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User with this Email already exist" });
             user.isVeified = "waiting";
+            user.address = "";
             await dbContext.Users.AddAsync(user);
             int num = await dbContext.SaveChangesAsync();
             if (num != 0)
