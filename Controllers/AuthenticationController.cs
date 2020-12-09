@@ -34,22 +34,30 @@ namespace EF_DietaNoDietaApi.Controllers
 
         [HttpPost]
         [Route("Register")]//http://localhost:5000/api/Authenticate/Register
-        public async Task<IActionResult> register([FromBody] UserModel user)
+        public async Task<IActionResult> register([FromBody] RegisterModel register)
         {
             //var found =  dbContext.Users.First(x=> x.email == user.email);
-            var found = dbContext.Users.FindAsync(user.email);            
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            var found = dbContext.RegisterUsers.FindAsync(register.email);            
             if (found.Result != null)
                 return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User with this Email already exist" });
+            UserModel user = new UserModel();
+            user.email = register.email;
+            user.fitnessLevel = register.fitnessLevel;
+            user.phoneNumber = register.phoneNumber;             
             user.isVeified = "waiting";
-            user.address = "";
+            register.password = "abc123";
+            await dbContext.RegisterUsers.AddAsync(register);
+            int num1 = await dbContext.SaveChangesAsync();
             await dbContext.Users.AddAsync(user);
-            int num = await dbContext.SaveChangesAsync();
-            if (num != 0)
+            int num2 = await dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            if (num1 != 0 && num2 != 0)
                 return Ok(new Response { Status = "200", Message = "User registered Successfully" });
-                
             else
+            {                
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "User could not register" });
-
+            }
          
         }
         [HttpGet]
@@ -63,7 +71,7 @@ namespace EF_DietaNoDietaApi.Controllers
         [Route("Login")]////http://localhost:5000/api/Authenticate/Login
         public async Task<IActionResult> login([FromBody] LoginModel login)
         {
-            var found = dbContext.Users.FindAsync(login.email);
+            var found = dbContext.RegisterUsers.FindAsync(login.email);
             if (found.Result == null) {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "400", Message = "User with this email not found" });
             }
@@ -71,12 +79,12 @@ namespace EF_DietaNoDietaApi.Controllers
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Wrong Password" });
             }
-
-            UserModel user=  found.Result;
+            var result = dbContext.Users.FindAsync(login.email);
+            UserModel user= result.Result;
             if (user.isVeified == "true" )
             {
-                String token = GenerateJWTToken(user);
-                return Ok(new { Status = "200", Message = "User Logged in Successfully",Profile = user, Token = token });
+               // String token = GenerateJWTToken(user);
+                return Ok(new { Status = "200", Message = "User Logged in Successfully",Profile = user});
             }
 
             return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Not verified by admin" });

@@ -25,7 +25,7 @@ namespace EF_DietaNoDietaApi.Controllers
             _config = configuration;
         }
         [HttpGet]
-        [Route("getProfiles")]
+        [Route("getProfiles")]//for admin only
         public async Task<IActionResult> getProfiles([FromQuery] int item){
             IQueryable<Model.UserModel> result=null;
             if (item == 0)//get all users

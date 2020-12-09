@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20201207075617_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20201209100929_register_User_Migration")]
+    partial class register_User_Migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,21 +20,39 @@ namespace EF_DietaNoDietaApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.RegisterModel", b =>
+                {
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("fitnessLevel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("phoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("email");
+
+                    b.ToTable("RegisterUsers");
+                });
+
             modelBuilder.Entity("EF_DietaNoDietaApi.Model.UserModel", b =>
                 {
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserRole")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("address")
-                        .IsRequired()
+                    b.Property<string>("age")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("date")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("fitnessLevel")
@@ -44,14 +62,20 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.Property<string>("fullName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("isVeified")
+                    b.Property<string>("gender")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("password")
+                    b.Property<string>("height")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("isVeified")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("phoneNumber")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("weight")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("email");

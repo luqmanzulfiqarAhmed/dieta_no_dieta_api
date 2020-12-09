@@ -8,18 +8,21 @@ namespace EF_DietaNoDietaApi.Model
 {
     public class RegisterModel
     {
-       // [Required (ErrorMessage ="User Name is required")]
-        //public String userName { get; set; }
-       // public String firstName { get; set; }
+
         [Required(ErrorMessage = "Email is required")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid email address")]
+        [Key]
         public String email { get; set; }
 
 
         [Required(ErrorMessage = "Phone Number is required")]
         public String phoneNumber { get; set; }
       
-        //  [Required(ErrorMessage = "Password is required")]
+        
         public String password { get; set; }
+
+        [Required(ErrorMessage = "Fitness level is required")]
+        public String fitnessLevel { get; set; }
 
     }
 }
