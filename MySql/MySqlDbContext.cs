@@ -18,8 +18,10 @@ namespace EF_DietaNoDietaApi.MySql
             //modelBuilder.Ignore<UserModel>();
             modelBuilder.Entity<UserModel>().HasKey(b => b.email);
             modelBuilder.Entity<RegisterModel>().HasKey(b => b.email);
+            modelBuilder.Entity<TrainerModel>().HasKey(b => b.email);
         }
         public DbSet<UserModel> Users { get; set; }
         public DbSet<RegisterModel> RegisterUsers { get; set; }
+        public DbSet<TrainerModel> TrainerModel { get; set; }
     }
 }

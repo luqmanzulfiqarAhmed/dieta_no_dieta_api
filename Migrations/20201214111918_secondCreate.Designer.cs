@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20201209100929_register_User_Migration")]
-    partial class register_User_Migration
+    [Migration("20201214111918_secondCreate")]
+    partial class secondCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,9 @@ namespace EF_DietaNoDietaApi.Migrations
                 {
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserRole")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("fitnessLevel")
                         .IsRequired()
@@ -39,6 +42,36 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.HasKey("email");
 
                     b.ToTable("RegisterUsers");
+                });
+
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.TrainerModel", b =>
+                {
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("age")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("experience")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("phoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("email");
+
+                    b.ToTable("TrainerModel");
                 });
 
             modelBuilder.Entity("EF_DietaNoDietaApi.Model.UserModel", b =>

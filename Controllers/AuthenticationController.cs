@@ -46,6 +46,7 @@ namespace EF_DietaNoDietaApi.Controllers
             user.fitnessLevel = register.fitnessLevel;
             user.phoneNumber = register.phoneNumber;             
             user.isVeified = "waiting";
+            user.UserRole = register.UserRole;
             register.password = "abc123";
             await dbContext.RegisterUsers.AddAsync(register);
             int num1 = await dbContext.SaveChangesAsync();
@@ -60,6 +61,39 @@ namespace EF_DietaNoDietaApi.Controllers
             }
          
         }
+
+
+        [HttpPost]
+        [Route("Register/Trainer")]//http://localhost:5000/api/Authenticate/Register/Trainer
+        public async Task<IActionResult> registerTrainer([FromBody] TrainerModel trainer)
+        {
+            //var found =  dbContext.Users.First(x=> x.email == user.email);
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            var found = dbContext.RegisterUsers.FindAsync(trainer.email);
+            if (found.Result != null)
+                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "Trainer with this Email already exist" });
+            
+            RegisterModel register = new RegisterModel();
+            register.email = trainer.email;
+            register.password = "abc123";
+            register.phoneNumber = trainer.phoneNumber;
+            register.UserRole = "Trainer";
+            register.fitnessLevel = "0";
+            await dbContext.TrainerModel.AddAsync(trainer);
+            int num2 = await dbContext.SaveChangesAsync();
+            await dbContext.RegisterUsers.AddAsync(register);
+            int num1 = await dbContext.SaveChangesAsync();            
+            await transaction.CommitAsync();
+            if (num1 != 0 && num2 !=0)
+                return Ok(new Response { Status = "200", Message = "Trainer registered Successfully" });
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Trainer could not register" });
+            }
+
+        }
+
+
         [HttpGet]
         [Route("test")]
         public IEnumerable<UserModel> get() {
@@ -89,6 +123,29 @@ namespace EF_DietaNoDietaApi.Controllers
 
             return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Not verified by admin" });
         }
+
+        [HttpPost]
+        [Route("Login/Trainer")]//http://localhost:5000/api/Authenticate/Login/Trianer
+        public async Task<IActionResult> loginTrainer([FromBody] LoginModel login)
+        {
+            var found = dbContext.RegisterUsers.FindAsync(login.email);
+            if (found.Result == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "400", Message = "User with this email not found" });
+            }
+            if (found.Result.password != login.password)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Wrong Password" });
+            }
+            var result = dbContext.TrainerModel.FindAsync(login.email);
+            TrainerModel trainer = result.Result;
+            
+                // String token = GenerateJWTToken(user);
+                return Ok(new { Status = "200", Message = "User Logged in Successfully", Profile = trainer,UserRole= "Trainer"});            
+
+            
+        }
+
         String GenerateJWTToken(UserModel userInfo)
         {
             var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));

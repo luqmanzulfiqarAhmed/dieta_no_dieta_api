@@ -2,7 +2,7 @@
 
 namespace EF_DietaNoDietaApi.Migrations
 {
-    public partial class register_User_Migration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,6 +13,7 @@ namespace EF_DietaNoDietaApi.Migrations
                     email = table.Column<string>(nullable: false),
                     phoneNumber = table.Column<string>(nullable: false),
                     password = table.Column<string>(nullable: true),
+                    UserRole = table.Column<string>(nullable: true),
                     fitnessLevel = table.Column<string>(nullable: false)
                 },
                 constraints: table =>

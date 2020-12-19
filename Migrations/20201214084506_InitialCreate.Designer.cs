@@ -3,14 +3,16 @@ using EF_DietaNoDietaApi.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    partial class MySqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201214084506_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,36 +42,6 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.HasKey("email");
 
                     b.ToTable("RegisterUsers");
-                });
-
-            modelBuilder.Entity("EF_DietaNoDietaApi.Model.TrainerModel", b =>
-                {
-                    b.Property<string>("email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("age")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("experience")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("fullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("phoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("email");
-
-                    b.ToTable("TrainerModel");
                 });
 
             modelBuilder.Entity("EF_DietaNoDietaApi.Model.UserModel", b =>
