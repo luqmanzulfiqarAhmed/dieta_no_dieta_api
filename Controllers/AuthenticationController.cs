@@ -98,6 +98,7 @@ namespace EF_DietaNoDietaApi.Controllers
         [Route("test")]
         public IEnumerable<UserModel> get() {
 
+                String test = "working";
             return dbContext.Users.ToList();
         }
 
