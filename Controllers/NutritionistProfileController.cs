@@ -11,14 +11,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace EF_DietaNoDietaApi.Controllers
 {
-    [Route("api/TrainerProfile")]
+    [Route("api/NutritionistProfile")]
     [ApiController]
-    public class TrainerProfileController: ControllerBase
+    public class NutritionistProfileController: ControllerBase
     {
         private readonly IConfiguration _config;
         private readonly MySqlDbContext dbContext;
 
-        public TrainerProfileController(MySqlDbContext context, IConfiguration configuration)
+        public NutritionistProfileController(MySqlDbContext context, IConfiguration configuration)
         {
 
             dbContext = context;
@@ -28,25 +28,25 @@ namespace EF_DietaNoDietaApi.Controllers
         [Route("getProfiles")]//for admin only
         public async Task<IActionResult> getProfiles([FromQuery] int item)
         {
-            IQueryable<Model.TrainerModel> result = null;
+            IQueryable<Model.NutritionistModel> result = null;
             if (item == 0)//get all users
             {
-                result = dbContext.TrainerModel;
+                result = dbContext.Nutritionist;
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             //else if (item == 1)//get all verified users
             //{
-            //    result = dbContext.TrainerModel.Where(p => p.UserRole == UserRoles.User && p.isVeified == "true");
+            //    result = dbContext.Nutritionist.Where(p => p.UserRole == UserRoles.User && p.isVeified == "true");
             //    return StatusCode(StatusCodes.Status200OK, result);
             //}
             //else if (item == 2)//get all blocked users
             //{
-            //    result = dbContext.TrainerModel.Where(p => p.UserRole == UserRoles.User && p.isVeified == "false");
+            //    result = dbContext.Nutritionist.Where(p => p.UserRole == UserRoles.User && p.isVeified == "false");
             //    return StatusCode(StatusCodes.Status200OK, result);
             //}
             //else if (item == 3)//get all not waiting users
             //{
-            //    result = dbContext.TrainerModel.Where(p => p.UserRole == UserRoles.User && p.isVeified == "waiting");
+            //    result = dbContext.Nutritionist.Where(p => p.UserRole == UserRoles.User && p.isVeified == "waiting");
             //    return StatusCode(StatusCodes.Status200OK, result);
             //}
             return StatusCode(StatusCodes.Status406NotAcceptable, new { Message = "type of user not found" });

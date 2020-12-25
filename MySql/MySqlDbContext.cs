@@ -23,5 +23,6 @@ namespace EF_DietaNoDietaApi.MySql
         public DbSet<UserModel> Users { get; set; }
         public DbSet<RegisterModel> RegisterUsers { get; set; }
         public DbSet<TrainerModel> TrainerModel { get; set; }
+        public DbSet<NutritionistModel> Nutritionist { get; set; }
     }
 }
