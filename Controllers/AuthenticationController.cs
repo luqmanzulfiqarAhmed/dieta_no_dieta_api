@@ -139,7 +139,7 @@ namespace EF_DietaNoDietaApi.Controllers
             NutritionistModel nutritionist = result.Result;
 
             // String token = GenerateJWTToken(user);
-            return Ok(new { Status = "200", Message = "User Logged in Successfully", Profile = nutritionist, UserRole = "Trainer" });
+            return Ok(new { Status = "200", Message = "User Logged in Successfully", Profile = nutritionist, UserRole = "Nutritionist" });
 
 
         }
