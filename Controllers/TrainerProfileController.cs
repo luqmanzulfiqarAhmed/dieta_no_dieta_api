@@ -55,7 +55,7 @@ namespace EF_DietaNoDietaApi.Controllers
  
         [HttpPut]
         [Route("updateProfile")]
-        public async Task<IActionResult> updateProfile([FromBody] NutritionistModel user)
+        public async Task<IActionResult> updateProfile([FromBody] TrainerModel user)
         {
             //var found = dbContext.Users.FindAsync(user.email);
             //UserModel result = found.Result;
@@ -74,7 +74,7 @@ namespace EF_DietaNoDietaApi.Controllers
 
             try
             {
-                var local = dbContext.Set<NutritionistModel>()
+                var local = dbContext.Set<TrainerModel>()
                                      .Local
                                      .FirstOrDefault(entry => entry.email.Equals(user.email));
                 // check if local is not null 
