@@ -78,7 +78,7 @@ namespace EF_DietaNoDietaApi.Controllers
             register.phoneNumber = trainer.phoneNumber;
             register.UserRole = "Trainer";
             register.fitnessLevel = "0";
-            await dbContext.TrainerModel.AddAsync(trainer);
+            await dbContext.Trainer.AddAsync(trainer);
             int num2 = await dbContext.SaveChangesAsync();
             await dbContext.RegisterUsers.AddAsync(register);
             int num1 = await dbContext.SaveChangesAsync();            
@@ -189,7 +189,7 @@ namespace EF_DietaNoDietaApi.Controllers
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Wrong Password" });
             }
-            var result = dbContext.TrainerModel.FindAsync(login.email);
+            var result = dbContext.Trainer.FindAsync(login.email);
             TrainerModel trainer = result.Result;
             
                 // String token = GenerateJWTToken(user);
