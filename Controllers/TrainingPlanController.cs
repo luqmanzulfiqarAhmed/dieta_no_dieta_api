@@ -25,8 +25,8 @@ namespace EF_DietaNoDietaApi.Controllers
             _config = configuration;
         }
         [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> getTrainingPlans([FromQuery] String trainerEmail, String userEmail)
+        [Route("getTrainingPlan")]
+        public async Task<IActionResult> getTrainingPlan([FromQuery] String trainerEmail, String userEmail)
         {
             try
             {
