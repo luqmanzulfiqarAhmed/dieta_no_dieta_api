@@ -19,8 +19,7 @@ namespace EF_DietaNoDietaApi.Model
         [Required(ErrorMessage = "Trainer Email is required")]
         public String trainerEmail { get; set; }
         [Required(ErrorMessage = "Duration is required")]
-        public String duration { get; set; }
-        [Required(ErrorMessage = "Date is required")]
+        public String duration { get; set; }        
         public String date { get; set; }
         [Required(ErrorMessage = "Number of hours is required")]
         public String numOfHrs { get; set; }

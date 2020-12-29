@@ -28,7 +28,7 @@ namespace EF_DietaNoDietaApi.MySql
         public DbSet<TrainerModel> Trainer { get; set; }
         public DbSet<NutritionistModel> Nutritionist { get; set; }
         public DbSet<TrainingPlanModel> TrainingPlan { get; set; }
-        //public DbSet<ExerciseModel> ExerciseModel { get; set; }
-        //public DbSet<ExerciseRowModel> ExerciseRowModel { get; set; }
+        public DbSet<ExerciseModel> ExerciseModel { get; set; }
+        public DbSet<ExerciseRowModel> ExerciseRowModel { get; set; }
     }
 }
