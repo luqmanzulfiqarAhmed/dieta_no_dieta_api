@@ -62,7 +62,7 @@ namespace EF_DietaNoDietaApi.Migrations
                     userEmail = table.Column<string>(nullable: false),
                     trainerEmail = table.Column<string>(nullable: false),
                     duration = table.Column<string>(nullable: false),
-                    date = table.Column<string>(nullable: false),
+                    date = table.Column<string>(nullable: true),
                     numOfHrs = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
