@@ -100,7 +100,7 @@ namespace EF_DietaNoDietaApi.Controllers
             try
             {
                 await using var transaction = await dbContext.Database.BeginTransactionAsync();
-                var found = dbContext.RegisterUsers.FindAsync(nutritionist.email);                
+                var found =  dbContext.RegisterUsers.FindAsync(nutritionist.email);                
                 if (found.Result != null)
                     return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "Nutritionist with this Email already exist" });
 
