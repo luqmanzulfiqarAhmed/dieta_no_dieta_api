@@ -42,7 +42,7 @@ namespace EF_DietaNoDietaApi.Model
         [Required(ErrorMessage = "Plan Type is required")]
         public String planType { get; set; }
         [Required(ErrorMessage = "You must specify isWishlist true or false")]
-        public String isWishlist { get; set; };
+        public String isWishlist { get; set; }
         [Required(ErrorMessage = "Food items are required")]
         public List<FoodItemsModel> foodItemsModels { get; set; }
 
