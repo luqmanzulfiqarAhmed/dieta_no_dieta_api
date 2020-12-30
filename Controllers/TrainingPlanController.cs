@@ -31,20 +31,8 @@ namespace EF_DietaNoDietaApi.Controllers
             try
             {
                 IQueryable<Model.TrainingPlanModel> result = null;
-                result = dbContext.TrainingPlan.Where(p => p.userEmail == userEmail && p.trainerEmail == trainerEmail);
-                TrainingPlanModel trainingPlan = (TrainingPlanModel)result.Cast<TrainingPlanModel>();
-                IQueryable<Model.ExerciseModel> exercises = null;
-                //exercises = dbContext.ExerciseModel.Where(p => p.== trainingPlan.trainingPlanId );
-
-                //IQueryable<TrainingPlanModel> IQUsers = dbContext.TrainingPlan.Include(u => u.exercises).Where(p => p.userEmail == userEmail && p.trainerEmail == trainerEmail);
-                //User _user = IQUsers.FirstOrDefault<User>();
-                //Role _role = _user.Roles.FirstOrDefault<Role>();
-
-                //IQueryable<Model.TrainingPlanModel> result = null;
-                //result = dbContext.TrainingPlan.Where(p => p.userEmail == userEmail && p.trainerEmail == trainerEmail);
-                //ExerciseModel exercise = result.FirstOrDefault<ExerciseModel>();
-                //Role _role = _user.Roles.FirstOrDefault<Role>();
-
+                result = dbContext.TrainingPlan.Where(p => p.userEmail == userEmail && p.trainerEmail == trainerEmail).Include(e => e.exercises).ThenInclude(w=>w.exerciseRows);                                
+                
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (Exception ex) {
