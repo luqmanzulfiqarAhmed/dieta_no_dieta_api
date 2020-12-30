@@ -97,29 +97,34 @@ namespace EF_DietaNoDietaApi.Controllers
         public async Task<IActionResult> registerNutritionist([FromBody] NutritionistModel nutritionist)
         {
             //var found =  dbContext.Users.First(x=> x.email == user.email);
-            await using var transaction = await dbContext.Database.BeginTransactionAsync();
-            var found = dbContext.RegisterUsers.FindAsync(nutritionist.email);
-            if (found.Result != null)
-                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "Trainer with this Email already exist" });
-
-            RegisterModel register = new RegisterModel();
-            register.email = nutritionist.email;
-            register.password = "abc123";
-            register.phoneNumber = nutritionist.phoneNumber;
-            register.UserRole = "Nutritionist";
-            register.fitnessLevel = "0";
-            await dbContext.Nutritionist.AddAsync(nutritionist);
-            int num2 = await dbContext.SaveChangesAsync();
-            await dbContext.RegisterUsers.AddAsync(register);
-            int num1 = await dbContext.SaveChangesAsync();
-            await transaction.CommitAsync();
-            if (num1 != 0 && num2 != 0)
-                return Ok(new Response { Status = "200", Message = "Nutritionist registered Successfully" });
-            else
+            try
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Trainer could not register" });
-            }
+                await using var transaction = await dbContext.Database.BeginTransactionAsync();
+                var found = dbContext.RegisterUsers.FindAsync(nutritionist.email);                
+                if (found.Result != null)
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "Nutritionist with this Email already exist" });
 
+                RegisterModel register = new RegisterModel();
+                register.email = nutritionist.email;
+                register.password = "abc123";
+                register.phoneNumber = nutritionist.phoneNumber;
+                register.UserRole = "Nutritionist";
+                register.fitnessLevel = "0";
+                await dbContext.Nutritionist.AddAsync(nutritionist);
+                int num2 = await dbContext.SaveChangesAsync();
+                await dbContext.RegisterUsers.AddAsync(register);
+                int num1 = await dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+                if (num1 != 0 && num2 != 0)
+                    return Ok(new Response { Status = "200", Message = "Nutritionist registered Successfully" });
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Nutritionist could not register" });
+                }
+            }
+            catch (Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = ex.Message });
+            }
         }
 
         [HttpPost]
