@@ -26,5 +26,7 @@ namespace EF_DietaNoDietaApi.Model
 
         [Required(ErrorMessage = "Exercise is required")]
         public List<ExerciseModel> exercises { get; set; }
+        
+        
     }
 }

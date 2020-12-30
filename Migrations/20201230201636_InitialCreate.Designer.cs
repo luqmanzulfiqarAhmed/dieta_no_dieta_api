@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20201230193320_InitialCreate")]
+    [Migration("20201230201636_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

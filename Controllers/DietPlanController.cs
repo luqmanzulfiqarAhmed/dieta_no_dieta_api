@@ -40,12 +40,28 @@ namespace EF_DietaNoDietaApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getDietPlan/Wishlist")]
+        public async Task<IActionResult> getDietPlanWishList([FromQuery] String trainerEmail)
+        {
+            try
+            {
+                IQueryable<Model.DietPlanModel> result = null;
+                result = dbContext.DietPlans.Where(p => p.isWishlist== "true" && p.trainerEmail == trainerEmail).Include(e => e.foodItemsModels).ThenInclude(f => f.foodDescriptionModels);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
 
         [HttpPost]
         [Route("addDietPlan")]//http://localhost:5000/api/Authenticate/Register
         public async Task<IActionResult> addPlan([FromBody] DietPlanModel dietPlanModel)
         {
-            //var found =  dbContext.Users.First(x=> x.email == user.email);
+            //var found =  dbContext.Users.First(x=> x.email == user.email);            
             await using var transaction = await dbContext.Database.BeginTransactionAsync();                        
             await dbContext.DietPlans.AddAsync(dietPlanModel);
             int num1 = await dbContext.SaveChangesAsync();            

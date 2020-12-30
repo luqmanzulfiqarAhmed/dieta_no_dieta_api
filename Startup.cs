@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using EF_DietaNoDietaApi.MySql;
-using EF_DietaNoDietaApi.Repositry;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
