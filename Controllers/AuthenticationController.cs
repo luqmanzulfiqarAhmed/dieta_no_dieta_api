@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using EF_DietaNoDietaApi.Model;
 using EF_DietaNoDietaApi.MySql;
-using EF_DietaNoDietaApi.Repositry;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -79,7 +78,7 @@ namespace EF_DietaNoDietaApi.Controllers
             register.phoneNumber = trainer.phoneNumber;
             register.UserRole = "Trainer";
             register.fitnessLevel = "0";
-            await dbContext.TrainerModel.AddAsync(trainer);
+            await dbContext.Trainer.AddAsync(trainer);
             int num2 = await dbContext.SaveChangesAsync();
             await dbContext.RegisterUsers.AddAsync(register);
             int num1 = await dbContext.SaveChangesAsync();            
@@ -90,6 +89,63 @@ namespace EF_DietaNoDietaApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Trainer could not register" });
             }
+
+        }
+
+        [HttpPost]
+        [Route("Register/Nutritionist")]//http://localhost:5000/api/Authenticate/Register/Nutritionist
+        public async Task<IActionResult> registerNutritionist([FromBody] NutritionistModel nutritionist)
+        {
+            //var found =  dbContext.Users.First(x=> x.email == user.email);
+            try
+            {
+                await using var transaction = await dbContext.Database.BeginTransactionAsync();
+                var found =  dbContext.RegisterUsers.FindAsync(nutritionist.email);                
+                if (found.Result != null)
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "Nutritionist with this Email already exist" });
+
+                RegisterModel register = new RegisterModel();
+                register.email = nutritionist.email;
+                register.password = "abc123";
+                register.phoneNumber = nutritionist.phoneNumber;
+                register.UserRole = "Nutritionist";
+                register.fitnessLevel = "0";
+                await dbContext.Nutritionist.AddAsync(nutritionist);
+                int num2 = await dbContext.SaveChangesAsync();
+                await dbContext.RegisterUsers.AddAsync(register);
+                int num1 = await dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+                if (num1 != 0 && num2 != 0)
+                    return Ok(new Response { Status = "200", Message = "Nutritionist registered Successfully" });
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Nutritionist could not register" });
+                }
+            }
+            catch (Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Login/Nutritionist")]//http://localhost:5000/api/Authenticate/Login/Trianer
+        public async Task<IActionResult> loginNutritionist([FromBody] LoginModel login)
+        {
+            var found = dbContext.RegisterUsers.FindAsync(login.email);
+            if (found.Result == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "400", Message = "User with this email not found" });
+            }
+            if (found.Result.password != login.password)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Wrong Password" });
+            }
+            var result = dbContext.Nutritionist.FindAsync(login.email);
+            NutritionistModel nutritionist = result.Result;
+
+            // String token = GenerateJWTToken(user);
+            return Ok(new { Status = "200", Message = "User Logged in Successfully", Profile = nutritionist, UserRole = "Nutritionist" });
+
 
         }
 
@@ -138,7 +194,7 @@ namespace EF_DietaNoDietaApi.Controllers
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Unauthorized", Message = "Wrong Password" });
             }
-            var result = dbContext.TrainerModel.FindAsync(login.email);
+            var result = dbContext.Trainer.FindAsync(login.email);
             TrainerModel trainer = result.Result;
             
                 // String token = GenerateJWTToken(user);

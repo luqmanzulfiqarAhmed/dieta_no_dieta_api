@@ -19,10 +19,7 @@ namespace EF_DietaNoDietaApi.Model
         [Required(ErrorMessage = "Phone Number is required")]
         public String phoneNumber { get; set; }
 
-
         public String isVeified { get; set; }
-
-
 
         public String UserRole { get; set; }
 
@@ -37,8 +34,22 @@ namespace EF_DietaNoDietaApi.Model
         public String age { get; set; }
         public String height { get; set; }
 
-        public String weight { get; set; }
-        public String gender { get; set; }
+        public String currentWeight { get; set; }
+        public String objectiveWeight { get; set; }
+
+        public String currentVaste { get; set; }
+        public String objectiveVaste { get; set; }
+
+        public String currentBiseps { get; set; }
+        public String objectiveBiseps { get; set; }
+
+        public String currentHips { get; set; }
+        public String objectiveHips { get; set; }
+
+        public String currentThai { get; set; }
+        public String objectiveThai { get; set; }
+        public String gender { get; set; }        
+        public String imc { get; set; }
 
 
     }
