@@ -22,6 +22,22 @@ namespace EF_DietaNoDietaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TrainerModel",
+                columns: table => new
+                {
+                    email = table.Column<string>(nullable: false),
+                    age = table.Column<string>(nullable: false),
+                    experience = table.Column<string>(nullable: false),
+                    gender = table.Column<string>(nullable: false),
+                    fullName = table.Column<string>(nullable: false),
+                    phoneNumber = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrainerModel", x => x.email);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -47,6 +63,9 @@ namespace EF_DietaNoDietaApi.Migrations
         {
             migrationBuilder.DropTable(
                 name: "RegisterUsers");
+
+            migrationBuilder.DropTable(
+                name: "TrainerModel");
 
             migrationBuilder.DropTable(
                 name: "Users");
