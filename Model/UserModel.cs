@@ -51,6 +51,11 @@ namespace EF_DietaNoDietaApi.Model
         public String gender { get; set; }        
         public String imc { get; set; }
 
+        
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid neutrtionist email address")]        
+        public String neutritionistEmail { get; set; }
 
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid trainer email address")]
+        public String trainerEmail { get; set; }
     }
 }

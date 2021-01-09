@@ -52,7 +52,25 @@ namespace EF_DietaNoDietaApi.Controllers
             return StatusCode(StatusCodes.Status406NotAcceptable, new { Message = "type of user not found" });
 
         }
- 
+
+        [HttpGet]
+        [Route("getUsers")]
+        public async Task<IActionResult> getUsers([FromQuery] String neutritionistEmail)
+        {
+            try
+            {
+                IQueryable<Model.UserModel> result = null;
+                result = dbContext.Users.Where(p => p.neutritionistEmail== neutritionistEmail);
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
+
+        
+
         [HttpPut]
         [Route("updateProfile")]
         public async Task<IActionResult> updateProfile([FromBody] NutritionistModel user)

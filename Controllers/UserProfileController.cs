@@ -109,5 +109,33 @@ namespace EF_DietaNoDietaApi.Controllers
                 return StatusCode(StatusCodes.Status404NotFound, new { Message = "Email not found!" });
             }
         }
+
+        [HttpPost]
+        [Route("assign/Neutritionist")]//http://localhost:5000/api/Authenticate/Register/Trainer
+        public async Task<Object> assignNeutritionist([FromQuery] String neutritionistEmail, [FromQuery] String userEmail)
+        {
+
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            var user = dbContext.Users.FindAsync(userEmail);
+            if (user.Result == null)
+                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User does not found" });
+            var neutrtionist = dbContext.Nutritionist.FindAsync(neutritionistEmail);
+            if (neutrtionist.Result == null)
+                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "Neutrtionist does not found" });
+
+            //dbContext.Users.Attach(user.Result);
+            //dbContext.Entry(user.Result).Property(x => x.neutritionistEmail).IsModified = true;
+            //dbContext.Entry(user.Result).Property(x => x.neutritionistEmail).CurrentValue= neutritionistEmail;
+            user.Result.neutritionistEmail = neutritionistEmail;            
+            var result = dbContext.Users.Update(user.Result);
+            int num = dbContext.SaveChanges();
+            
+            if (result  != null && num !=0)
+                return Ok( new Response { Status = "200", Message = "Neutrtionist assigned successfully" });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Neutrtionist could not assigned" });
+
+        }
+
     }
 }
