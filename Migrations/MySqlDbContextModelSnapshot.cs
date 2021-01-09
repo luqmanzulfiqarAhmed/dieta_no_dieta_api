@@ -32,6 +32,10 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("isWishlist")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("planType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -350,6 +354,9 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.Property<string>("isVeified")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("neutritionistEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("objectiveBiseps")
                         .HasColumnType("nvarchar(max)");
 
@@ -367,6 +374,9 @@ namespace EF_DietaNoDietaApi.Migrations
 
                     b.Property<string>("phoneNumber")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("trainerEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("email");

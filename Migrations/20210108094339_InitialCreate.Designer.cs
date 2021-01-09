@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20201230201636_InitialCreate")]
+    [Migration("20210108094339_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,10 @@ namespace EF_DietaNoDietaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("dietPlanName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("isWishlist")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -352,6 +356,9 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.Property<string>("isVeified")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("neutritionistEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("objectiveBiseps")
                         .HasColumnType("nvarchar(max)");
 
@@ -369,6 +376,9 @@ namespace EF_DietaNoDietaApi.Migrations
 
                     b.Property<string>("phoneNumber")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("trainerEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("email");

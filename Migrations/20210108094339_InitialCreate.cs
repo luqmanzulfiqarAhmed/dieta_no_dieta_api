@@ -22,7 +22,8 @@ namespace EF_DietaNoDietaApi.Migrations
                     sleepHours = table.Column<string>(nullable: false),
                     sleepQuality = table.Column<string>(nullable: false),
                     dietPlanName = table.Column<string>(nullable: false),
-                    planType = table.Column<string>(nullable: false)
+                    planType = table.Column<string>(nullable: false),
+                    isWishlist = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,7 +117,9 @@ namespace EF_DietaNoDietaApi.Migrations
                     currentThai = table.Column<string>(nullable: true),
                     objectiveThai = table.Column<string>(nullable: true),
                     gender = table.Column<string>(nullable: true),
-                    imc = table.Column<string>(nullable: true)
+                    imc = table.Column<string>(nullable: true),
+                    neutritionistEmail = table.Column<string>(nullable: true),
+                    trainerEmail = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
