@@ -152,10 +152,10 @@ namespace EF_DietaNoDietaApi.Controllers
 
         [HttpGet]
         [Route("test")]
-        public IEnumerable<UserModel> get() {
+        public String get() {
 
                 String test = "working";
-            return dbContext.Users.ToList();
+            return test;
         }
 
         [HttpPost]
