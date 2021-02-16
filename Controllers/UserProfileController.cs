@@ -25,33 +25,33 @@ namespace EF_DietaNoDietaApi.Controllers
             _config = configuration;
         }
         [HttpGet]
-        [Route("getProfiles")]//for admin only
-        public async Task<IActionResult> getProfiles([FromQuery] int item){
-            IQueryable<Model.UserModel> result=null;
-            if (item == 0)//get all users
-            {
-                result = dbContext.Users.Where(p => p.UserRole == UserRoles.User);
-                return StatusCode(StatusCodes.Status200OK, result);
-            }
-            else if (item == 1)//get all verified users
-            {
-                result = dbContext.Users.Where(p => p.UserRole == UserRoles.User && p.isVeified == "true");
-                return StatusCode(StatusCodes.Status200OK, result);
-            }
-            else if (item == 2)//get all blocked users
-            {
-                result = dbContext.Users.Where(p => p.UserRole == UserRoles.User && p.isVeified == "false");
-                return StatusCode(StatusCodes.Status200OK, result);
-            }
-            else if (item == 3)//get all not waiting users
-            {
-                result = dbContext.Users.Where(p => p.UserRole == UserRoles.User && p.isVeified == "waiting");
-                return StatusCode(StatusCodes.Status200OK, result);
-            }
-            return StatusCode(StatusCodes.Status406NotAcceptable, new {Message = "type of user not found" });
-
+        [Route("getProfile")]
+        public async Task<IActionResult> getProfiles([FromQuery] String email){
+            
+            var found = dbContext.Users.FindAsync(email);
+            UserModel result = found.Result;
+            if(result == null)
+                return StatusCode(StatusCodes.Status404NotFound, new {Message = "User with this email not found" });
+            return StatusCode(StatusCodes.Status200OK, result);
         }
 
+        [HttpGet]
+        [Route("getDietPlans")]
+        public async Task<IActionResult> getDietPlans([FromQuery] String userEmail,String foodTime) {
+
+            try
+            {
+                IQueryable<Model.DietPlanModel> result = null;
+                result = dbContext.DietPlans.Where(p => p.userEmail == userEmail && p.foodTime == foodTime);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
+   
         [HttpPut]
         [Route("updateRequest")]
         //authorize this method for admin only
@@ -135,6 +135,49 @@ namespace EF_DietaNoDietaApi.Controllers
             else
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Neutrtionist could not assigned" });
 
+        }
+
+        [HttpGet]
+        [Route("get/Assigned/Neutrtionist")]
+        public async Task<IActionResult> getAssignedNeutrtionist([FromQuery] String userEmail)
+        {             
+            try
+            {
+                await using var transaction = await dbContext.Database.BeginTransactionAsync();
+                var user = dbContext.Users.FindAsync(userEmail);
+                if (user.Result == null)
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User does not found" });
+                var neutrtionist  = dbContext.Nutritionist.FindAsync(user.Result.neutritionistEmail);
+                if (neutrtionist.Result == null)
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "200", Message = "No neutrtionist assigned yet" });
+                return StatusCode(StatusCodes.Status404NotFound, neutrtionist.Result);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new { Message = "Error occured" + ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("get/Assigned/Trainer")]
+        public async Task<IActionResult> getAssignedTrainer([FromQuery] String userEmail)
+        {
+            try
+            {
+                await using var transaction = await dbContext.Database.BeginTransactionAsync();
+                var user = dbContext.Users.FindAsync(userEmail);
+                if (user.Result == null)
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User does not found" });
+                var trainer = dbContext.Trainer.FindAsync(user.Result.trainerEmail);
+                if (trainer.Result == null)
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "200", Message = "No trainer assigned yet" });
+                return StatusCode(StatusCodes.Status404NotFound, trainer.Result);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new { Message = "Error occured" + ex.Message });
+            }
         }
 
     }

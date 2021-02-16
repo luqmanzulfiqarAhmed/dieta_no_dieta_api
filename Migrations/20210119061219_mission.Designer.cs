@@ -4,14 +4,16 @@ using EF_DietaNoDietaApi.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    partial class MySqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210119061219_mission")]
+    partial class mission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,19 +34,7 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("foodTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("isWishlist")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("missionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("neutrtionistEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -53,21 +43,34 @@ namespace EF_DietaNoDietaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("sleepHours")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("sleepQuality")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("thieSize")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("trainerEmail")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("userEmail")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("vaste")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("water")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("weight")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("dietPlanId");
@@ -127,13 +130,13 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.ToTable("ExerciseRowModel");
                 });
 
-            modelBuilder.Entity("EF_DietaNoDietaApi.Model.FoodItemsModel", b =>
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.FoodDescriptionModel", b =>
                 {
-                    b.Property<Guid>("foodItemId")
+                    b.Property<Guid>("foodDescriptionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("DietPlanModeldietPlanId")
+                    b.Property<Guid?>("FoodItemsModelfoodItemId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("foodCalories")
@@ -156,18 +159,31 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("food_id")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("food_name")
+                    b.Property<string>("missionName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("food_type")
+                    b.HasKey("foodDescriptionId");
+
+                    b.HasIndex("FoodItemsModelfoodItemId");
+
+                    b.ToTable("foodDescription");
+                });
+
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.FoodItemsModel", b =>
+                {
+                    b.Property<Guid>("foodItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DietPlanModeldietPlanId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("foodName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("food_url")
+                    b.Property<string>("foodTime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -182,15 +198,6 @@ namespace EF_DietaNoDietaApi.Migrations
                 {
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<float>("AverageStars")
-                        .HasColumnType("real");
-
-                    b.Property<float>("TotalRatings")
-                        .HasColumnType("real");
-
-                    b.Property<float>("TotalStars")
-                        .HasColumnType("real");
 
                     b.Property<string>("age")
                         .IsRequired()
@@ -350,6 +357,7 @@ namespace EF_DietaNoDietaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("mission")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("neutritionistEmail")
@@ -394,6 +402,13 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.HasOne("EF_DietaNoDietaApi.Model.ExerciseModel", null)
                         .WithMany("exerciseRows")
                         .HasForeignKey("ExerciseModelexerciseId");
+                });
+
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.FoodDescriptionModel", b =>
+                {
+                    b.HasOne("EF_DietaNoDietaApi.Model.FoodItemsModel", null)
+                        .WithMany("foodDescriptionModels")
+                        .HasForeignKey("FoodItemsModelfoodItemId");
                 });
 
             modelBuilder.Entity("EF_DietaNoDietaApi.Model.FoodItemsModel", b =>

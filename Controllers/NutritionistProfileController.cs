@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace EF_DietaNoDietaApi.Controllers
 {
-    [Route("api/NutritionistProfile")]
+    [Route("api/NutritionistProfile/")]
     [ApiController]
     public class NutritionistProfileController: ControllerBase
     {
@@ -59,17 +59,57 @@ namespace EF_DietaNoDietaApi.Controllers
         {
             try
             {
-                IQueryable<Model.UserModel> result = null;
-                result = dbContext.Users.Where(p => p.neutritionistEmail== neutritionistEmail);
+                
+                var result = dbContext.Users
+                       .Where(p => p.neutritionistEmail == neutritionistEmail)
+                       .Select(x => new
+                       {
+                           x.email,
+                           x.date,
+                           x.fullName
+                       });
+
                 return StatusCode(StatusCodes.Status200OK, result);
+                
             }
             catch (Exception ex)
             {
+                
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
         }
 
-        
+        [HttpPost]
+        [Route("postRating")]
+        public async Task<IActionResult> PostRating([FromQuery] String neutritionistEmail, [FromQuery] int stars) 
+        {
+            try
+            {
+
+                var nutritionistModel = dbContext.Nutritionist.FindAsync(neutritionistEmail);                 
+                NutritionistModel nutritionist = nutritionistModel.Result;
+                if(nutritionist == null)
+                    return StatusCode(StatusCodes.Status404NotFound, new { Message = "Nutrtionist not found"});
+                float totalRatings = nutritionist.TotalRatings;
+                totalRatings++;
+                float totalStars = nutritionist.TotalStars;
+                totalStars += stars;
+                float averageStars = totalStars/totalRatings;
+                
+                nutritionist.TotalStars = totalStars;
+                nutritionist.TotalRatings = totalRatings;
+                nutritionist.AverageStars = averageStars;
+
+                await dbContext.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new { Message = "Thank you for posting. New rating is: "+ nutritionist.AverageStars.ToString()});
+
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
 
         [HttpPut]
         [Route("updateProfile")]
@@ -112,5 +152,8 @@ namespace EF_DietaNoDietaApi.Controllers
                 return StatusCode(StatusCodes.Status404NotFound, new { Message = "Email not found!" });
             }
         }
+    
+
+    
     }
 }

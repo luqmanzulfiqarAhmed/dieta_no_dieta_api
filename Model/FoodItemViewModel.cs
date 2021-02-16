@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace EF_DietaNoDietaApi.Model
 {
-    public class FoodItemsModel
+    public class FoodItemViewModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid foodItemId { get; set; }
 
+        [Required(ErrorMessage = "Food Description is required")]
+        public String food_description { get; set; }
+        [Required(ErrorMessage = "Food Id is required")]
         public String food_id { get; set; }
         [Required(ErrorMessage = "Food Name is required")]
         public String food_name { get; set; }
@@ -22,20 +25,5 @@ namespace EF_DietaNoDietaApi.Model
 
         [Required(ErrorMessage = "Food URL is required")]
         public String food_url { get; set; }
-
-        [Required(ErrorMessage = "Food Quantity is required")]
-        public String foodQuantity { get; set; }
-
-        [Required(ErrorMessage = "Food Calories are required")]
-        public String foodCalories { get; set; }
-        [Required(ErrorMessage = "Food Fat is required")]
-        public String foodFat { get; set; }
-
-        [Required(ErrorMessage = "Food Carbs are required")]
-        public String foodCarbs { get; set; }
-        [Required(ErrorMessage = "Food Protein is required")]
-        public String foodProtein { get; set; }
-
-        
     }
 }

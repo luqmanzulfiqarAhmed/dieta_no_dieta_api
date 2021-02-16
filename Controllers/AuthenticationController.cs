@@ -40,12 +40,15 @@ namespace EF_DietaNoDietaApi.Controllers
             var found = dbContext.RegisterUsers.FindAsync(register.email);            
             if (found.Result != null)
                 return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User with this Email already exist" });
+            DateTime today = DateTime.Today;            
             UserModel user = new UserModel();
+            user.date = today.ToString("dd/MM/yyyy");
             user.email = register.email;
             user.fitnessLevel = register.fitnessLevel;
             user.phoneNumber = register.phoneNumber;             
             user.isVeified = "waiting";
             user.UserRole = register.UserRole;
+            user.mission = "weight loss";
             register.password = "abc123";
             await dbContext.RegisterUsers.AddAsync(register);
             int num1 = await dbContext.SaveChangesAsync();
@@ -99,6 +102,9 @@ namespace EF_DietaNoDietaApi.Controllers
             //var found =  dbContext.Users.First(x=> x.email == user.email);
             try
             {
+                nutritionist.TotalRatings = 0;
+                nutritionist.TotalStars = 0;
+                nutritionist.AverageStars = 0;
                 await using var transaction = await dbContext.Database.BeginTransactionAsync();
                 var found =  dbContext.RegisterUsers.FindAsync(nutritionist.email);                
                 if (found.Result != null)
@@ -128,7 +134,7 @@ namespace EF_DietaNoDietaApi.Controllers
         }
 
         [HttpPost]
-        [Route("Login/Nutritionist")]//http://localhost:5000/api/Authenticate/Login/Trianer
+        [Route("Login/Nutritionist")]//http://localhost:5000/api/Authenticate/Login/Nutritionist
         public async Task<IActionResult> loginNutritionist([FromBody] LoginModel login)
         {
             var found = dbContext.RegisterUsers.FindAsync(login.email);
@@ -144,7 +150,8 @@ namespace EF_DietaNoDietaApi.Controllers
             NutritionistModel nutritionist = result.Result;
 
             // String token = GenerateJWTToken(user);
-            return Ok(new { Status = "200", Message = "User Logged in Successfully", Profile = nutritionist, UserRole = "Nutritionist" });
+            return Ok(new { Status = "200", Message = "User Logged in Successfully", Profile = result.Result, UserRole = "Nutritionist" });
+            
 
 
         }

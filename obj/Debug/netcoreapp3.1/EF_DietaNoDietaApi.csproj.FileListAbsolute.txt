@@ -117,8 +117,6 @@ C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\bin\Debug\netcoreapp3.1\runtime
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.csprojAssemblyReference.cache
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.AssemblyInfoInputs.cache
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.AssemblyInfo.cs
-C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.csproj.CoreCompileInputs.cache
-C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.RazorTargetAssemblyInfo.cache
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.csproj.CopyComplete
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\staticwebassets\EF_DietaNoDietaApi.StaticWebAssets.Manifest.cache
@@ -190,3 +188,5 @@ C:\Users\Administrator\Documents\GitHub\dieta_no_dieta_api\obj\Debug\netcoreapp3
 C:\Users\Administrator\Documents\GitHub\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.dll
 C:\Users\Administrator\Documents\GitHub\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.pdb
 C:\Users\Administrator\Documents\GitHub\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.genruntimeconfig.cache
+C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.csproj.CoreCompileInputs.cache
+C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.MvcApplicationPartsAssemblyInfo.cache

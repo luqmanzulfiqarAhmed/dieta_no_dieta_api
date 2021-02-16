@@ -30,7 +30,8 @@ namespace EF_DietaNoDietaApi.Model
         //profile
 
         public String fullName { get; set; }
-
+        
+        public String mission { get; set; }
         public String age { get; set; }
         public String height { get; set; }
 

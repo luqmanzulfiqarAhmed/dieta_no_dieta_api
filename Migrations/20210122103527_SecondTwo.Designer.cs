@@ -4,14 +4,16 @@ using EF_DietaNoDietaApi.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    partial class MySqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210122103527_SecondTwo")]
+    partial class SecondTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,19 +34,7 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("foodTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("isWishlist")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("missionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("neutrtionistEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -53,21 +43,34 @@ namespace EF_DietaNoDietaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("sleepHours")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("sleepQuality")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("thieSize")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("trainerEmail")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("userEmail")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("vaste")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("water")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("weight")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("dietPlanId");
@@ -148,6 +151,10 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("foodName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("foodProtein")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -156,18 +163,11 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("food_id")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("food_name")
+                    b.Property<string>("foodTime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("food_type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("food_url")
+                    b.Property<string>("missionName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -182,15 +182,6 @@ namespace EF_DietaNoDietaApi.Migrations
                 {
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<float>("AverageStars")
-                        .HasColumnType("real");
-
-                    b.Property<float>("TotalRatings")
-                        .HasColumnType("real");
-
-                    b.Property<float>("TotalStars")
-                        .HasColumnType("real");
 
                     b.Property<string>("age")
                         .IsRequired()
@@ -350,6 +341,7 @@ namespace EF_DietaNoDietaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("mission")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("neutritionistEmail")

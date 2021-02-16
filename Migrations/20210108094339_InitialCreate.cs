@@ -99,6 +99,7 @@ namespace EF_DietaNoDietaApi.Migrations
                 {
                     email = table.Column<string>(nullable: false),
                     phoneNumber = table.Column<string>(nullable: false),
+                    mission = table.Column<string>(nullable: true),
                     isVeified = table.Column<string>(nullable: true),
                     UserRole = table.Column<string>(nullable: true),
                     fitnessLevel = table.Column<string>(nullable: false),

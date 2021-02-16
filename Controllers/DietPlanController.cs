@@ -26,28 +26,29 @@ namespace EF_DietaNoDietaApi.Controllers
         }
         [HttpGet]
         [Route("getDietPlan/forUser")]
-        public async Task<IActionResult> getDietPlan([FromQuery] String trainerEmail, String userEmail)
+        public async Task<IActionResult> getDietPlan([FromQuery] String neutrtionistEmail, String userEmail,String foodTime)
         {
             try
             {
                 IQueryable<Model.DietPlanModel> result = null;
-                result = dbContext.DietPlans.Where(p => p.userEmail == userEmail && p.trainerEmail == trainerEmail).Include(e => e.foodItemsModels).ThenInclude(f=>f.foodDescriptionModels);                                
-                
+                result = dbContext.DietPlans.Where(p => p.userEmail == userEmail && p.neutrtionistEmail == neutrtionistEmail && p.foodTime == foodTime);
+
                 return StatusCode(StatusCodes.Status200OK, result);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
         }
-
         [HttpGet]
-        [Route("getDietPlan/Wishlist")]
-        public async Task<IActionResult> getDietPlanWishList([FromQuery] String trainerEmail)
+        [Route("getDietPlan/forUser/ById")]
+        public async Task<IActionResult> getDietPlanForUserById([FromQuery] Guid id)
         {
             try
             {
+
                 IQueryable<Model.DietPlanModel> result = null;
-                result = dbContext.DietPlans.Where(p => p.isWishlist== "true" && p.trainerEmail == trainerEmail).Include(e => e.foodItemsModels).ThenInclude(f => f.foodDescriptionModels);
+                result = dbContext.DietPlans.Where(p => p.isWishlist == "false" && p.dietPlanId == id).Include(e => e.foodItemsModels);
 
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -57,16 +58,91 @@ namespace EF_DietaNoDietaApi.Controllers
             }
         }
 
+        [Route("getDietPlan/forUser/FoodDetail/ById")]
+        public async Task<IActionResult> getDietPlanForUserFoodById([FromQuery] Guid id)
+        {
+            try
+            {
+
+                IQueryable<Model.FoodItemsModel> result = null;
+                result = dbContext.foodItems.Where(p => p.foodItemId == id);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("getDietPlan/Wishlist")]
+        public async Task<IActionResult> getDietPlanWishList([FromQuery] String neutrtionistEmail,[FromQuery] String foodTime)
+        {
+            try
+            {
+                IQueryable<Model.DietPlanModel> result = null;
+                result = dbContext.DietPlans.Where(p => p.isWishlist == "true" && p.neutrtionistEmail == neutrtionistEmail && p.foodTime == foodTime);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("getDietPlan/Wishlist/ById")]
+        public async Task<IActionResult> getDietPlanWishListById([FromQuery] Guid id)
+        {
+            try
+            {
+
+                IQueryable<Model.DietPlanModel> result = null;
+                result = dbContext.DietPlans.Where(p => p.isWishlist == "true" && p.dietPlanId == id).Include(e => e.foodItemsModels);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("getDietPlan/Wishlist/FoodDetail/ById")]
+        public async Task<IActionResult> getDietPlanWishListFoddById([FromQuery] Guid id)
+        {
+            try
+            {
+
+                IQueryable<Model.FoodItemsModel> result = null;
+                result = dbContext.foodItems.Where(p => p.foodItemId == id);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
         [HttpPost]
         [Route("addDietPlan")]//http://localhost:5000/api/Authenticate/Register
-        public async Task<IActionResult> addPlan([FromBody] DietPlanModel dietPlanModel)
+        public async Task<IActionResult> addPlan([FromBody] DietPlanViewModel dietPlanViewModel)
         {
             //var found =  dbContext.Users.First(x=> x.email == user.email);            
-            await using var transaction = await dbContext.Database.BeginTransactionAsync();                        
+            DateTime today = DateTime.Today;
+            dietPlanViewModel.date = today.ToString("dd/MM/yyyy");
+            DietPlanModel dietPlanModel = new DietPlanModel();
+            dietPlanModel = (DietPlanModel)dietPlanViewModel;
+            
+            //dietPlanViewModel.foodItemsModels;
+            
+
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
             await dbContext.DietPlans.AddAsync(dietPlanModel);
-            int num1 = await dbContext.SaveChangesAsync();            
+            int num1 = await dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
-            if (num1 != 0 )
+            if (num1 != 0)
                 return Ok(new Response { Status = "200", Message = "Diet Plan added Successfully" });
             else
             {
@@ -79,7 +155,8 @@ namespace EF_DietaNoDietaApi.Controllers
         [HttpPut]
         [Route("updateRequest")]
         //authorize this method for admin only
-        public async Task<IActionResult> updateRequest([FromQuery] String email,[FromQuery] String request) {
+        public async Task<IActionResult> updateRequest([FromQuery] String email, [FromQuery] String request)
+        {
             var found = dbContext.Users.FindAsync(email);
             UserModel result = found.Result;
 
@@ -94,7 +171,7 @@ namespace EF_DietaNoDietaApi.Controllers
         }
 
         [HttpPut]
-        [Route("updateProfile")]        
+        [Route("updateProfile")]
         public async Task<IActionResult> updateProfile([FromBody] UserModel user)
         {
             //var found = dbContext.Users.FindAsync(user.email);
@@ -116,20 +193,21 @@ namespace EF_DietaNoDietaApi.Controllers
             {
                 var local = dbContext.Set<UserModel>()
                                      .Local
-                                     .FirstOrDefault(entry => entry.email.Equals(user.email));                
+                                     .FirstOrDefault(entry => entry.email.Equals(user.email));
                 // check if local is not null 
                 if (local != null)
                 {
                     // detach
-                    dbContext.Entry(local).State = EntityState.Detached;                    
+                    dbContext.Entry(local).State = EntityState.Detached;
                 }
                 // set Modified flag in your entry
-                dbContext.Entry(user).State = EntityState.Modified;                
+                dbContext.Entry(user).State = EntityState.Modified;
                 // save 
                 dbContext.SaveChanges();
-                return StatusCode(StatusCodes.Status200OK, new { Message = "Profile Updated Successfully!",Profile= user });
+                return StatusCode(StatusCodes.Status200OK, new { Message = "Profile Updated Successfully!", Profile = user });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status404NotFound, new { Message = "Email not found!" });
             }
         }

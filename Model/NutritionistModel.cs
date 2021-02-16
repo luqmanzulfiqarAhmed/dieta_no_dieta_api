@@ -22,5 +22,9 @@ namespace EF_DietaNoDietaApi.Model
         public String fullName { get; set; }
         [Required(ErrorMessage = "Phone Number is required")]
         public String phoneNumber { get; set; }
+
+        public float TotalRatings { get; set; }
+        public float TotalStars { get; set; }
+        public float AverageStars { get; set; }
     }
 }

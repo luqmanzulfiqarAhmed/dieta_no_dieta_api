@@ -4,14 +4,16 @@ using EF_DietaNoDietaApi.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    partial class MySqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210216195042_Ratings")]
+    partial class Ratings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,11 +188,11 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.Property<float>("AverageStars")
                         .HasColumnType("real");
 
-                    b.Property<float>("TotalRatings")
-                        .HasColumnType("real");
+                    b.Property<int>("TotalRatings")
+                        .HasColumnType("int");
 
-                    b.Property<float>("TotalStars")
-                        .HasColumnType("real");
+                    b.Property<int>("TotalStars")
+                        .HasColumnType("int");
 
                     b.Property<string>("age")
                         .IsRequired()

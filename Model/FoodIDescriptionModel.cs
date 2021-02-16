@@ -9,10 +9,7 @@ namespace EF_DietaNoDietaApi.Model
 {
     public class FoodDescriptionModel
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid foodDescriptionId { get; set; }
+ 
         [Required(ErrorMessage = "Mission Name is required")]
         public String missionName { get; set; }
         [Required(ErrorMessage = "Food Quantity is required")]
