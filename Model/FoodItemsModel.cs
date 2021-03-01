@@ -36,6 +36,6 @@ namespace EF_DietaNoDietaApi.Model
         [Required(ErrorMessage = "Food Protein is required")]
         public String foodProtein { get; set; }
 
-        
+
     }
 }

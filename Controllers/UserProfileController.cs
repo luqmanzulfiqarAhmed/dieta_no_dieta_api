@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace EF_DietaNoDietaApi.Controllers
 {
-    [Route("api/UserProfile")]
+    [Route("api/UserProfile/")]
     [ApiController]
     public class UserProfileController : ControllerBase
     {
@@ -63,7 +63,8 @@ namespace EF_DietaNoDietaApi.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "User with this email not found" });
             }
-            result.isVeified = request;
+            result.isVeified = request;            
+            
             dbContext.Users.Update(result);
             await dbContext.SaveChangesAsync();
             return StatusCode(StatusCodes.Status200OK, new Response { Status = "200", Message = "Status Changed Successfully!" });
@@ -116,18 +117,18 @@ namespace EF_DietaNoDietaApi.Controllers
         {
 
             await using var transaction = await dbContext.Database.BeginTransactionAsync();
-            var user = dbContext.Users.FindAsync(userEmail);
-            if (user.Result == null)
+            var user = await dbContext.Users.FindAsync(userEmail);
+            if (user == null)
                 return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User does not found" });
-            var neutrtionist = dbContext.Nutritionist.FindAsync(neutritionistEmail);
-            if (neutrtionist.Result == null)
+            var neutrtionist = await dbContext.Nutritionist.FindAsync(neutritionistEmail);
+            if (neutrtionist == null)
                 return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "Neutrtionist does not found" });
 
             //dbContext.Users.Attach(user.Result);
             //dbContext.Entry(user.Result).Property(x => x.neutritionistEmail).IsModified = true;
             //dbContext.Entry(user.Result).Property(x => x.neutritionistEmail).CurrentValue= neutritionistEmail;
-            user.Result.neutritionistEmail = neutritionistEmail;            
-            var result = dbContext.Users.Update(user.Result);
+            user.neutritionistEmail = neutritionistEmail;            
+            var result = dbContext.Users.Update(user);
             int num = dbContext.SaveChanges();
             
             if (result  != null && num !=0)
@@ -171,7 +172,7 @@ namespace EF_DietaNoDietaApi.Controllers
                 var trainer = dbContext.Trainer.FindAsync(user.Result.trainerEmail);
                 if (trainer.Result == null)
                     return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "200", Message = "No trainer assigned yet" });
-                return StatusCode(StatusCodes.Status404NotFound, trainer.Result);
+                return StatusCode(StatusCodes.Status200OK, trainer.Result);
 
             }
             catch (Exception ex)
@@ -180,5 +181,43 @@ namespace EF_DietaNoDietaApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAllWaterGoals")]
+        public async Task<IActionResult> GetAllWaterGoals([FromQuery] String userEmail)
+        {
+            var goals = await dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == userEmail).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+
+        [HttpGet]
+        [Route("GetWaterGoals")]
+        public async Task<IActionResult> GetWaterGoals([FromQuery] String userEmail,   [FromQuery] String isComplete)
+        {
+            var goals = await dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == userEmail &&  p.isCompleted == isComplete).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+
+        [HttpPost]
+        [Route("PostWaterGoalsGlass")]
+        public async Task<IActionResult> PostWaterGoalsGlass()
+        {
+            return null;
+        }
+
+
+            [HttpGet]
+        [Route("GetAllGoals")]
+        public async Task<IActionResult> GetAllGoals([FromQuery] String userEmail)
+        {
+            var goals = await dbContext.DietPlanGoals.Where(p => p.UserEmail == userEmail).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+        [HttpGet]
+        [Route("GetGoals")]
+        public async Task<IActionResult> GetGoals([FromQuery] String userEmail, [FromQuery] String isComplete)
+        {
+            var goals = await dbContext.DietPlanGoals.Where(p => p.UserEmail == userEmail && p.isCompleted == isComplete).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace EF_DietaNoDietaApi
 {
@@ -24,12 +25,21 @@ namespace EF_DietaNoDietaApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options => 
+            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddMvc(option => option.EnableEndpointRouting = false)
+                .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling= ReferenceLoopHandling.Ignore)
+                ;
+
             String connStr = Configuration.GetConnectionString("");
             //"ConnStr": "Data Source=DESKTOP-KUU8T4L\\MYDATABASE;Initial Catalog=DietaNoDieta;Integrated Security=True"
-            services.AddDbContext<MySqlDbContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:ConnStr"]));
+            services.AddDbContext<MySqlDbContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:ConnStr"]),ServiceLifetime.Transient);
+            
             //services.AddTransient<IRepositry,UserRepositry>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
+             
+
     .AddJwtBearer(options =>
     {
         options.RequireHttpsMetadata = false;

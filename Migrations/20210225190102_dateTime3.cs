@@ -3,31 +3,68 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EF_DietaNoDietaApi.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class dateTime3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "DietPlanGoals",
+                columns: table => new
+                {
+                    GoalId = table.Column<Guid>(nullable: false),
+                    NutrtionistEmail = table.Column<string>(nullable: false),
+                    UserEmail = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    StartingDate = table.Column<string>(nullable: false),
+                    EndingDate = table.Column<string>(nullable: false),
+                    ExpectedResult = table.Column<string>(nullable: false),
+                    GoalType = table.Column<string>(nullable: false),
+                    isCompleted = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DietPlanGoals", x => x.GoalId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "DietPlans",
                 columns: table => new
                 {
                     dietPlanId = table.Column<Guid>(nullable: false),
                     userEmail = table.Column<string>(nullable: true),
-                    trainerEmail = table.Column<string>(nullable: false),
-                    date = table.Column<string>(nullable: true),
-                    weight = table.Column<string>(nullable: false),
-                    water = table.Column<string>(nullable: false),
-                    thieSize = table.Column<string>(nullable: false),
-                    vaste = table.Column<string>(nullable: false),
-                    sleepHours = table.Column<string>(nullable: false),
-                    sleepQuality = table.Column<string>(nullable: false),
+                    neutrtionistEmail = table.Column<string>(nullable: false),
+                    date = table.Column<DateTime>(nullable: true),
+                    weight = table.Column<string>(nullable: true),
+                    water = table.Column<string>(nullable: true),
+                    thieSize = table.Column<string>(nullable: true),
+                    sleepHours = table.Column<string>(nullable: true),
+                    sleepQuality = table.Column<string>(nullable: true),
                     dietPlanName = table.Column<string>(nullable: false),
                     planType = table.Column<string>(nullable: false),
+                    foodTime = table.Column<string>(nullable: false),
+                    missionName = table.Column<string>(nullable: false),
                     isWishlist = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DietPlans", x => x.dietPlanId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DietPlanWaterGoals",
+                columns: table => new
+                {
+                    WaterGoalId = table.Column<Guid>(nullable: false),
+                    NutrtionistEmail = table.Column<string>(nullable: false),
+                    UserEmail = table.Column<string>(nullable: false),
+                    TargetGlass = table.Column<string>(nullable: false),
+                    DrunkGlass = table.Column<string>(nullable: true),
+                    isCompleted = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DietPlanWaterGoals", x => x.WaterGoalId);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,7 +76,10 @@ namespace EF_DietaNoDietaApi.Migrations
                     experience = table.Column<string>(nullable: false),
                     gender = table.Column<string>(nullable: false),
                     fullName = table.Column<string>(nullable: false),
-                    phoneNumber = table.Column<string>(nullable: false)
+                    phoneNumber = table.Column<string>(nullable: false),
+                    TotalRatings = table.Column<float>(nullable: false),
+                    TotalStars = table.Column<float>(nullable: false),
+                    AverageStars = table.Column<float>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,12 +139,12 @@ namespace EF_DietaNoDietaApi.Migrations
                 {
                     email = table.Column<string>(nullable: false),
                     phoneNumber = table.Column<string>(nullable: false),
-                    mission = table.Column<string>(nullable: true),
                     isVeified = table.Column<string>(nullable: true),
                     UserRole = table.Column<string>(nullable: true),
                     fitnessLevel = table.Column<string>(nullable: false),
                     date = table.Column<string>(nullable: true),
                     fullName = table.Column<string>(nullable: true),
+                    mission = table.Column<string>(nullable: true),
                     age = table.Column<string>(nullable: true),
                     height = table.Column<string>(nullable: true),
                     currentWeight = table.Column<string>(nullable: true),
@@ -132,8 +172,15 @@ namespace EF_DietaNoDietaApi.Migrations
                 columns: table => new
                 {
                     foodItemId = table.Column<Guid>(nullable: false),
-                    foodName = table.Column<string>(nullable: false),
-                    foodTime = table.Column<string>(nullable: false),
+                    food_id = table.Column<string>(nullable: true),
+                    food_name = table.Column<string>(nullable: false),
+                    food_type = table.Column<string>(nullable: false),
+                    food_url = table.Column<string>(nullable: false),
+                    foodQuantity = table.Column<string>(nullable: false),
+                    foodCalories = table.Column<string>(nullable: false),
+                    foodFat = table.Column<string>(nullable: false),
+                    foodCarbs = table.Column<string>(nullable: false),
+                    foodProtein = table.Column<string>(nullable: false),
                     DietPlanModeldietPlanId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
@@ -144,6 +191,26 @@ namespace EF_DietaNoDietaApi.Migrations
                         column: x => x.DietPlanModeldietPlanId,
                         principalTable: "DietPlans",
                         principalColumn: "dietPlanId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RatingHistory",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    UserEmail = table.Column<string>(nullable: true),
+                    Stars = table.Column<string>(nullable: true),
+                    NutritionistModelemail = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RatingHistory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RatingHistory_Nutritionist_NutritionistModelemail",
+                        column: x => x.NutritionistModelemail,
+                        principalTable: "Nutritionist",
+                        principalColumn: "email",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -163,30 +230,6 @@ namespace EF_DietaNoDietaApi.Migrations
                         column: x => x.TrainingPlanModeltrainingPlanId,
                         principalTable: "TrainingPlan",
                         principalColumn: "trainingPlanId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "foodDescription",
-                columns: table => new
-                {
-                    foodDescriptionId = table.Column<Guid>(nullable: false),
-                    missionName = table.Column<string>(nullable: false),
-                    foodQuantity = table.Column<string>(nullable: false),
-                    foodCalories = table.Column<string>(nullable: false),
-                    foodFat = table.Column<string>(nullable: false),
-                    foodCarbs = table.Column<string>(nullable: false),
-                    foodProtein = table.Column<string>(nullable: false),
-                    FoodItemsModelfoodItemId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_foodDescription", x => x.foodDescriptionId);
-                    table.ForeignKey(
-                        name: "FK_foodDescription_foodItems_FoodItemsModelfoodItemId",
-                        column: x => x.FoodItemsModelfoodItemId,
-                        principalTable: "foodItems",
-                        principalColumn: "foodItemId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -223,26 +266,32 @@ namespace EF_DietaNoDietaApi.Migrations
                 column: "ExerciseModelexerciseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_foodDescription_FoodItemsModelfoodItemId",
-                table: "foodDescription",
-                column: "FoodItemsModelfoodItemId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_foodItems_DietPlanModeldietPlanId",
                 table: "foodItems",
                 column: "DietPlanModeldietPlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RatingHistory_NutritionistModelemail",
+                table: "RatingHistory",
+                column: "NutritionistModelemail");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "DietPlanGoals");
+
+            migrationBuilder.DropTable(
+                name: "DietPlanWaterGoals");
+
+            migrationBuilder.DropTable(
                 name: "ExerciseRowModel");
 
             migrationBuilder.DropTable(
-                name: "foodDescription");
+                name: "foodItems");
 
             migrationBuilder.DropTable(
-                name: "Nutritionist");
+                name: "RatingHistory");
 
             migrationBuilder.DropTable(
                 name: "RegisterUsers");
@@ -257,13 +306,13 @@ namespace EF_DietaNoDietaApi.Migrations
                 name: "ExerciseModel");
 
             migrationBuilder.DropTable(
-                name: "foodItems");
+                name: "DietPlans");
+
+            migrationBuilder.DropTable(
+                name: "Nutritionist");
 
             migrationBuilder.DropTable(
                 name: "TrainingPlan");
-
-            migrationBuilder.DropTable(
-                name: "DietPlans");
         }
     }
 }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20210216195841_Ratings2")]
-    partial class Ratings2
+    [Migration("20210228165426_stats")]
+    partial class stats
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,14 +21,60 @@ namespace EF_DietaNoDietaApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.DietPlanGoals", b =>
+                {
+                    b.Property<Guid>("GoalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EndingDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExpectedResult")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GoalType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NutrtionistEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StartingDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("isCompleted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("GoalId");
+
+                    b.ToTable("DietPlanGoals");
+                });
+
             modelBuilder.Entity("EF_DietaNoDietaApi.Model.DietPlanModel", b =>
                 {
                     b.Property<Guid>("dietPlanId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("date")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("dietPlanName")
                         .IsRequired()
@@ -75,6 +121,35 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.HasKey("dietPlanId");
 
                     b.ToTable("DietPlans");
+                });
+
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.DietPlanWaterGoals", b =>
+                {
+                    b.Property<Guid>("WaterGoalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DrunkGlass")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NutrtionistEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TargetGlass")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("isCompleted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("WaterGoalId");
+
+                    b.ToTable("DietPlanWaterGoals");
                 });
 
             modelBuilder.Entity("EF_DietaNoDietaApi.Model.ExerciseModel", b =>
@@ -217,6 +292,28 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.HasKey("email");
 
                     b.ToTable("Nutritionist");
+                });
+
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.RatingHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NutritionistModelemail")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Stars")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NutritionistModelemail");
+
+                    b.ToTable("RatingHistory");
                 });
 
             modelBuilder.Entity("EF_DietaNoDietaApi.Model.RegisterModel", b =>
@@ -403,6 +500,13 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.HasOne("EF_DietaNoDietaApi.Model.DietPlanModel", null)
                         .WithMany("foodItemsModels")
                         .HasForeignKey("DietPlanModeldietPlanId");
+                });
+
+            modelBuilder.Entity("EF_DietaNoDietaApi.Model.RatingHistory", b =>
+                {
+                    b.HasOne("EF_DietaNoDietaApi.Model.NutritionistModel", null)
+                        .WithMany("RatingHistories")
+                        .HasForeignKey("NutritionistModelemail");
                 });
 #pragma warning restore 612, 618
         }

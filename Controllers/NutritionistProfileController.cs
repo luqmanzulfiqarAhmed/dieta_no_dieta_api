@@ -81,15 +81,34 @@ namespace EF_DietaNoDietaApi.Controllers
 
         [HttpPost]
         [Route("postRating")]
-        public async Task<IActionResult> PostRating([FromQuery] String neutritionistEmail, [FromQuery] int stars) 
+        public async Task<IActionResult> PostRating(PostRatingViewModel postRatingViewModel) 
         {
             try
             {
-
-                var nutritionistModel = dbContext.Nutritionist.FindAsync(neutritionistEmail);                 
-                NutritionistModel nutritionist = nutritionistModel.Result;
+                int stars=0;                
+                stars = int.Parse(postRatingViewModel.Stars);
+                var user = await dbContext.Users.FindAsync(postRatingViewModel.UserEmail);
+                if (user == null)
+                    return StatusCode(StatusCodes.Status404NotFound, new { Message = "User not found" });
+                
+                var nutritionist =await dbContext.Nutritionist.FindAsync(postRatingViewModel.NutrtionistEmail);
+               // NutritionistModel nutritionist = nutritionistModel.Result;
                 if(nutritionist == null)
                     return StatusCode(StatusCodes.Status404NotFound, new { Message = "Nutrtionist not found"});
+                
+                var history = dbContext.RatingHistory.Where(x=> x.UserEmail == postRatingViewModel.UserEmail);
+                if(history.Count() != 0 )
+                    return StatusCode(StatusCodes.Status409Conflict, new { Message = "User already rated this nutrtionist" });
+                
+                RatingHistory rating = new RatingHistory()
+                {
+                    UserEmail = postRatingViewModel.UserEmail,
+                    Stars = postRatingViewModel.Stars
+                };
+                  var result = await dbContext.RatingHistory.AddAsync(rating);
+                if(result == null)
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { Message = "Something went wrong please try again" });
+
                 float totalRatings = nutritionist.TotalRatings;
                 totalRatings++;
                 float totalStars = nutritionist.TotalStars;
@@ -152,8 +171,75 @@ namespace EF_DietaNoDietaApi.Controllers
                 return StatusCode(StatusCodes.Status404NotFound, new { Message = "Email not found!" });
             }
         }
-    
 
-    
+        [HttpPost]
+        [Route("PostGoals")]
+        public async Task<IActionResult> PostGoals([FromBody] DietPlanGoals goals) 
+        {
+            goals.isCompleted = "false"; 
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            var user = await dbContext.Users.FindAsync(goals.UserEmail);
+            var nutrtionist = await dbContext.Nutritionist.FindAsync(goals.NutrtionistEmail);
+            if (user is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "User does not found" });
+            if (nutrtionist is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "Nutrtionist does not found" });
+            var result = await dbContext.DietPlanGoals.Where(p => p.UserEmail == goals.UserEmail && p.GoalType == goals.GoalType && p.isCompleted == "false").ToListAsync();
+            if (result.Count() != 0)                
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "406", Message = "There is already a incomplete goal of this type." });
+            await dbContext.DietPlanGoals.AddAsync(goals);
+            int num = await dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            if (num != 0 )
+                return Ok(new Response { Status = "200", Message = "Goal created Successfully" });
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        [Route("PostWaterGoals")]
+        public async Task<IActionResult> PostWaterGoals([FromBody] DietPlanWaterGoals waterGoals)
+        {
+            waterGoals.isCompleted = "false";
+            waterGoals.TargetGlass = "0";
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            var user = await dbContext.Users.FindAsync(waterGoals.UserEmail);
+            var nutrtionist = await dbContext.Nutritionist.FindAsync(waterGoals.NutrtionistEmail);
+            if (user is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "User does not found" });
+            if (nutrtionist is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "Nutrtionist does not found" });
+            var result = await dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == waterGoals.UserEmail && p.isCompleted == "false").ToListAsync();
+            if (result.Count() != 0)
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "406", Message = "There is already a incomplete goal of this type." });
+            await dbContext.DietPlanWaterGoals.AddAsync(waterGoals);
+            int num = await dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            if (num != 0)
+                return Ok(new Response { Status = "200", Message = "Water Goal created Successfully" });
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Something went wrong" });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("GetAllGoals")]
+        public async Task<IActionResult> GetAllGoals([FromQuery] String nutrtionistEmail) 
+        {
+            var goals = await dbContext.DietPlanGoals.Where(p => p.NutrtionistEmail == nutrtionistEmail).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+        [HttpGet]
+        [Route("GetGoals")]
+        public async Task<IActionResult> GetGoals([FromQuery] String nutrtionistEmail, [FromQuery] String goalType, [FromQuery] String isComplete)
+        {
+            var goals = await dbContext.DietPlanGoals.Where(p => p.NutrtionistEmail == nutrtionistEmail && p.GoalType == goalType && p.isCompleted == isComplete).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+
     }
 }

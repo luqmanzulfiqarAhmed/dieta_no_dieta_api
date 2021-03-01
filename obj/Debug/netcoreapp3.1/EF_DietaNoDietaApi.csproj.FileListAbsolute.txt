@@ -190,3 +190,6 @@ C:\Users\Administrator\Documents\GitHub\dieta_no_dieta_api\obj\Debug\netcoreapp3
 C:\Users\Administrator\Documents\GitHub\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.genruntimeconfig.cache
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.csproj.CoreCompileInputs.cache
 C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\obj\Debug\netcoreapp3.1\EF_DietaNoDietaApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\luqma\Videos\dietApi\dieta_no_dieta_api\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll

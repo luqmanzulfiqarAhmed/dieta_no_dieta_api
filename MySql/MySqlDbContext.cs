@@ -21,6 +21,7 @@ namespace EF_DietaNoDietaApi.MySql
             modelBuilder.Entity<TrainerModel>().HasKey(b => b.email);
             modelBuilder.Entity<TrainingPlanModel>().HasKey(b => b.trainingPlanId);
             modelBuilder.Entity<DietPlanModel>().HasKey(b => b.dietPlanId);
+            modelBuilder.Entity<DietPlanGoals>().HasKey(b => b.GoalId);
             //modelBuilder.Entity<FoodItemsModel>().HasKey(b => b.foodItemId);
             //modelBuilder.Entity<FoodDescriptionModel>().HasKey(b => b.foodDescriptionId);
             //modelBuilder.Entity<ExerciseModel>().HasKey(b => b.exerciseId);
@@ -34,6 +35,10 @@ namespace EF_DietaNoDietaApi.MySql
         public DbSet<ExerciseModel> ExerciseModel { get; set; }
         public DbSet<ExerciseRowModel> ExerciseRowModel { get; set; }
         public DbSet<DietPlanModel> DietPlans { get; set; }
-        public DbSet<FoodItemsModel> foodItems { get; set; }        
+        public DbSet<FoodItemsModel> foodItems { get; set; }
+        public DbSet<DietPlanGoals> DietPlanGoals { get; set; }
+
+        public DbSet<RatingHistory> RatingHistory { get; set; }
+        public DbSet<DietPlanWaterGoals> DietPlanWaterGoals { get; set; }
     }
 }
