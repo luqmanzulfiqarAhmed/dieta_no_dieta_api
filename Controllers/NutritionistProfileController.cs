@@ -13,7 +13,7 @@ namespace EF_DietaNoDietaApi.Controllers
 {
     [Route("api/NutritionistProfile/")]
     [ApiController]
-    public class NutritionistProfileController: ControllerBase
+    public class NutritionistProfileController : ControllerBase
     {
         private readonly IConfiguration _config;
         private readonly MySqlDbContext dbContext;
@@ -59,7 +59,7 @@ namespace EF_DietaNoDietaApi.Controllers
         {
             try
             {
-                
+
                 var result = dbContext.Users
                        .Where(p => p.neutritionistEmail == neutritionistEmail)
                        .Select(x => new
@@ -70,38 +70,6 @@ namespace EF_DietaNoDietaApi.Controllers
                        });
 
                 return StatusCode(StatusCodes.Status200OK, result);
-                
-            }
-            catch (Exception ex)
-            {
-                
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
-            }
-        }
-
-        [HttpPost]
-        [Route("postRating")]
-        public async Task<IActionResult> PostRating([FromQuery] String neutritionistEmail, [FromQuery] int stars) 
-        {
-            try
-            {
-
-                var nutritionistModel = dbContext.Nutritionist.FindAsync(neutritionistEmail);                 
-                NutritionistModel nutritionist = nutritionistModel.Result;
-                if(nutritionist == null)
-                    return StatusCode(StatusCodes.Status404NotFound, new { Message = "Nutrtionist not found"});
-                float totalRatings = nutritionist.TotalRatings;
-                totalRatings++;
-                float totalStars = nutritionist.TotalStars;
-                totalStars += stars;
-                float averageStars = totalStars/totalRatings;
-                
-                nutritionist.TotalStars = totalStars;
-                nutritionist.TotalRatings = totalRatings;
-                nutritionist.AverageStars = averageStars;
-
-                await dbContext.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, new { Message = "Thank you for posting. New rating is: "+ nutritionist.AverageStars.ToString()});
 
             }
             catch (Exception ex)
@@ -111,6 +79,7 @@ namespace EF_DietaNoDietaApi.Controllers
             }
         }
 
+         
         [HttpPut]
         [Route("updateProfile")]
         public async Task<IActionResult> updateProfile([FromBody] NutritionistModel user)
@@ -152,8 +121,189 @@ namespace EF_DietaNoDietaApi.Controllers
                 return StatusCode(StatusCodes.Status404NotFound, new { Message = "Email not found!" });
             }
         }
-    
 
-    
+        [HttpPost]
+        [Route("PostGoals")]
+        public async Task<IActionResult> PostGoals([FromBody] DietPlanGoals goals)
+        {
+            goals.isCompleted = "false";
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            var user = await dbContext.Users.FindAsync(goals.UserEmail);
+            var nutrtionist = await dbContext.Nutritionist.FindAsync(goals.NutrtionistEmail);
+            if (user is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "User does not found" });
+            if (nutrtionist is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "Nutrtionist does not found" });
+            var result = await dbContext.DietPlanGoals.Where(p => p.UserEmail == goals.UserEmail && p.GoalType == goals.GoalType && p.isCompleted == "false").ToListAsync();
+            if (result.Count() != 0)
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "406", Message = "There is already a incomplete goal of this type." });
+            await dbContext.DietPlanGoals.AddAsync(goals);
+            int num = await dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            if (num != 0)
+                return Ok(new Response { Status = "200", Message = "Goal created Successfully" });
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        [Route("addWaterGoal")]//http://localhost:5000/api/Authenticate/Register
+        public async Task<IActionResult> addWaterGoals([FromBody] DietPlanWaterGoals goals)
+        {
+
+            goals.isCompleted = "false";
+            float target = float.Parse(goals.WaterInLtrs);
+            goals.TaretGlasses = 4 * target;
+            goals.PerGlassValue = 1 / goals.TaretGlasses;
+
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            var user = await dbContext.Users.FindAsync(goals.UserEmail);
+            var nutrtionist = await dbContext.Nutritionist.FindAsync(goals.NeutrtionistEmail);
+
+            if (user is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "User does not found" });
+            
+            if (nutrtionist is null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "Nutrtionist does not found" });
+            
+            var result = await dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == goals.UserEmail  && p.isCompleted == "false").ToListAsync();
+            if (result.Count() != 0)
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "406", Message = "There is already a incomplete goal of this type." });
+            
+            await dbContext.DietPlanWaterGoals.AddAsync(goals);            
+            int num = await dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            
+            if (num != 0)
+                return Ok(new Response { Status = "200", Message = "Water Goals created Successfully" });
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Something went wrong" });
+            }
+
+        }
+
+        [HttpPut]
+        [Route("updateWaterGoal")]//http://localhost:5000/api/Authenticate/Register
+        public async Task<IActionResult> updateWaterGoal([FromQuery] String email)
+        {
+            DietPlanWaterGoals planWaterGoals = dbContext.DietPlanWaterGoals
+                 .Where(x => x.UserEmail == email && x.isCompleted.Equals( "false")).FirstOrDefault();
+            if (planWaterGoals == null)
+                return StatusCode(StatusCodes.Status404NotFound, "Ongoing Water goal against this user not found");
+            planWaterGoals.AcheivedValue += planWaterGoals.PerGlassValue;            
+            
+            if(planWaterGoals.AcheivedValue >= 1)
+            {
+                planWaterGoals.isCompleted = "true";
+                return StatusCode(StatusCodes.Status200OK, "Task completed successfully");
+            }
+            dbContext.DietPlanWaterGoals.Update(planWaterGoals);
+            await dbContext.SaveChangesAsync();
+
+            return StatusCode(StatusCodes.Status200OK, planWaterGoals.AcheivedValue);
+        }
+
+        [HttpPut]
+        [Route("updateWeightGoal")]//http://localhost:5000/api/Authenticate/Register
+        public async Task<IActionResult> updateWeightGoal([FromQuery] String email, [FromQuery] String currentWeight)
+        {
+            DietPlanGoals planWeightGoals = dbContext.DietPlanGoals
+                 .Where(x => x.UserEmail == email && x.isCompleted.Equals("false")).FirstOrDefault();
+            if (planWeightGoals == null)
+                return StatusCode(StatusCodes.Status404NotFound, "Ongoing weight goal against this user not found");
+
+            planWeightGoals.CurrentWeight = currentWeight;
+
+            dbContext.DietPlanGoals.Update(planWeightGoals);
+            await dbContext.SaveChangesAsync();
+
+            if (planWeightGoals.CurrentWeight.Equals(planWeightGoals.TargetWeight))
+                return StatusCode(StatusCodes.Status200OK, "You have acheived your target");
+
+
+
+            return StatusCode(StatusCodes.Status200OK, "Current weight updated");
+        }
+
+
+        [HttpGet]
+        [Route("GetAllWaterGoals")]
+        public async Task<IActionResult> GetAllWaterGoals([FromQuery] String userEmail)
+        {
+            var goals = await dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == userEmail).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+
+        [HttpGet]
+        [Route("GetAllGoals")]
+        public async Task<IActionResult> GetAllGoals([FromQuery] String nutrtionistEmail, [FromQuery] String isComplete)
+        {
+            var goals = await dbContext.DietPlanGoals.Where(p => p.NutrtionistEmail == nutrtionistEmail && p.isCompleted == isComplete).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+        [HttpGet]
+        [Route("GetGoals")]
+        public async Task<IActionResult> GetGoals([FromQuery] String nutrtionistEmail, [FromQuery] String goalType, [FromQuery] string isComplete)
+        {
+            var goals = await dbContext.DietPlanGoals.Where(p => p.NutrtionistEmail == nutrtionistEmail && p.GoalType == goalType && p.isCompleted == isComplete).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
+
+
+        [HttpPost]
+        [Route("postRating")]
+        public async Task<IActionResult> PostRating(PostRatingViewModel postRatingViewModel)
+        {
+            try
+            {
+                int stars = 0;
+                stars = int.Parse(postRatingViewModel.Stars);
+                var user =await dbContext.Users.FindAsync(postRatingViewModel.UserEmail);
+                if (user == null)
+                    return StatusCode(StatusCodes.Status404NotFound, new { Message = "User not found" });
+
+                var nutritionist = await dbContext.Nutritionist.FindAsync(postRatingViewModel.NutrtionistEmail);
+               // NutritionistModel nutritionist = nutritionistModel.Result;
+                if (nutritionist == null)
+                    return StatusCode(StatusCodes.Status404NotFound, new { Message = "Nutrtionist not found" });
+
+                var history = dbContext.RatingHistory.Where(x => x.UserEmail == postRatingViewModel.UserEmail);
+                if (history.Count() != 0)
+                    return StatusCode(StatusCodes.Status409Conflict, new { Message = "User already rated this nutrtionist" });
+
+                RatingHistory rating = new RatingHistory()
+                {
+                    UserEmail = postRatingViewModel.UserEmail,
+                    Stars = postRatingViewModel.Stars
+                };
+                var result = await dbContext.RatingHistory.AddAsync(rating);
+                if (result == null)
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { Message = "Something went wrong please try again" });
+
+                float totalRatings = nutritionist.TotalRatings;
+                totalRatings++;
+                float totalStars = nutritionist.TotalStars;
+                totalStars += stars;
+                float averageStars = totalStars / totalRatings;
+
+                nutritionist.TotalStars = totalStars;
+                nutritionist.TotalRatings = totalRatings;
+                nutritionist.AverageStars = averageStars;
+
+                await dbContext.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new { Message = "Thank you for posting. New rating is: " + nutritionist.AverageStars.ToString() });
+
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
+
+
     }
 }

@@ -18,7 +18,7 @@ namespace EF_DietaNoDietaApi.Model
 
         [Required(ErrorMessage = "Neutrtionist Email is required")]
         public String neutrtionistEmail { get; set; }
-        public String date { get; set; }
+        public DateTime date { get; set; }
         public String weight { get; set; }
         public String water { get; set; }
         public String thieSize { get; set; }

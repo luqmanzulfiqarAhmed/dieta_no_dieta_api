@@ -26,18 +26,20 @@ namespace EF_DietaNoDietaApi.Controllers
         }
         [HttpGet]
         [Route("getProfile")]
-        public async Task<IActionResult> getProfiles([FromQuery] String email){
-            
+        public async Task<IActionResult> getProfiles([FromQuery] String email)
+        {
+
             var found = dbContext.Users.FindAsync(email);
             UserModel result = found.Result;
-            if(result == null)
-                return StatusCode(StatusCodes.Status404NotFound, new {Message = "User with this email not found" });
+            if (result == null)
+                return StatusCode(StatusCodes.Status404NotFound, new { Message = "User with this email not found" });
             return StatusCode(StatusCodes.Status200OK, result);
         }
 
         [HttpGet]
         [Route("getDietPlans")]
-        public async Task<IActionResult> getDietPlans([FromQuery] String userEmail,String foodTime) {
+        public async Task<IActionResult> getDietPlans([FromQuery] String userEmail, String foodTime)
+        {
 
             try
             {
@@ -51,11 +53,12 @@ namespace EF_DietaNoDietaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
         }
-   
+
         [HttpPut]
         [Route("updateRequest")]
         //authorize this method for admin only
-        public async Task<IActionResult> updateRequest([FromQuery] String email,[FromQuery] String request) {
+        public async Task<IActionResult> updateRequest([FromQuery] String email, [FromQuery] String request)
+        {
             var found = dbContext.Users.FindAsync(email);
             UserModel result = found.Result;
 
@@ -70,7 +73,7 @@ namespace EF_DietaNoDietaApi.Controllers
         }
 
         [HttpPut]
-        [Route("updateProfile")]        
+        [Route("updateProfile")]
         public async Task<IActionResult> updateProfile([FromBody] UserModel user)
         {
             //var found = dbContext.Users.FindAsync(user.email);
@@ -92,20 +95,21 @@ namespace EF_DietaNoDietaApi.Controllers
             {
                 var local = dbContext.Set<UserModel>()
                                      .Local
-                                     .FirstOrDefault(entry => entry.email.Equals(user.email));                
+                                     .FirstOrDefault(entry => entry.email.Equals(user.email));
                 // check if local is not null 
                 if (local != null)
                 {
                     // detach
-                    dbContext.Entry(local).State = EntityState.Detached;                    
+                    dbContext.Entry(local).State = EntityState.Detached;
                 }
                 // set Modified flag in your entry
-                dbContext.Entry(user).State = EntityState.Modified;                
+                dbContext.Entry(user).State = EntityState.Modified;
                 // save 
                 dbContext.SaveChanges();
-                return StatusCode(StatusCodes.Status200OK, new { Message = "Profile Updated Successfully!",Profile= user });
+                return StatusCode(StatusCodes.Status200OK, new { Message = "Profile Updated Successfully!", Profile = user });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status404NotFound, new { Message = "Email not found!" });
             }
         }
@@ -126,12 +130,12 @@ namespace EF_DietaNoDietaApi.Controllers
             //dbContext.Users.Attach(user.Result);
             //dbContext.Entry(user.Result).Property(x => x.neutritionistEmail).IsModified = true;
             //dbContext.Entry(user.Result).Property(x => x.neutritionistEmail).CurrentValue= neutritionistEmail;
-            user.Result.neutritionistEmail = neutritionistEmail;            
+            user.Result.neutritionistEmail = neutritionistEmail;
             var result = dbContext.Users.Update(user.Result);
             int num = dbContext.SaveChanges();
-            
-            if (result  != null && num !=0)
-                return Ok( new Response { Status = "200", Message = "Neutrtionist assigned successfully" });
+
+            if (result != null && num != 0)
+                return Ok(new Response { Status = "200", Message = "Neutrtionist assigned successfully" });
             else
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "500", Message = "Neutrtionist could not assigned" });
 
@@ -140,17 +144,17 @@ namespace EF_DietaNoDietaApi.Controllers
         [HttpGet]
         [Route("get/Assigned/Neutrtionist")]
         public async Task<IActionResult> getAssignedNeutrtionist([FromQuery] String userEmail)
-        {             
+        {
             try
             {
                 await using var transaction = await dbContext.Database.BeginTransactionAsync();
                 var user = dbContext.Users.FindAsync(userEmail);
                 if (user.Result == null)
                     return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "409", Message = "User does not found" });
-                var neutrtionist  = dbContext.Nutritionist.FindAsync(user.Result.neutritionistEmail);
+                var neutrtionist = dbContext.Nutritionist.FindAsync(user.Result.neutritionistEmail);
                 if (neutrtionist.Result == null)
                     return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "200", Message = "No neutrtionist assigned yet" });
-                return StatusCode(StatusCodes.Status404NotFound, neutrtionist.Result);
+                return StatusCode(StatusCodes.Status200OK, neutrtionist.Result);
 
             }
             catch (Exception ex)
@@ -180,5 +184,25 @@ namespace EF_DietaNoDietaApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAllGoals")]
+        public async Task<IActionResult> GetAllGoals([FromQuery] String userEmail)
+        {
+            try
+            {
+                var goals = await dbContext.DietPlanGoals.Where(p => p.UserEmail == userEmail).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+            }catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("GetGoals")]
+        public async Task<IActionResult> GetGoals([FromQuery] String userEmail, [FromQuery] String goalType, [FromQuery] string isComplete)
+        {
+            var goals = await dbContext.DietPlanGoals.Where(p => p.UserEmail == userEmail && p.GoalType == goalType && p.isCompleted.Equals(isComplete) ).ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
     }
 }
