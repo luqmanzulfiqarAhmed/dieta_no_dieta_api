@@ -28,9 +28,11 @@ namespace EF_DietaNoDietaApi.Model
         public String EndDate { get; set; }
 
         public String isCompleted { get; set; }
-        public float TaretGlasses { get; set; }
+        public float TargetGlasses { get; set; }
 
         public float PerGlassValue { get; set; }
+        public int GlassesUserDrank { get; set; }
+        public float WaterPercentage { get; set; }
 
         public float AcheivedValue { get; set; }
     }

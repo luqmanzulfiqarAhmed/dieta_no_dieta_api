@@ -4,14 +4,16 @@ using EF_DietaNoDietaApi.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EF_DietaNoDietaApi.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    partial class MySqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210308175930_percentweight")]
+    partial class percentweight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,9 +143,6 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GlassesUserDrank")
-                        .HasColumnType("int");
-
                     b.Property<string>("NeutrtionistEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -155,7 +154,7 @@ namespace EF_DietaNoDietaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("TargetGlasses")
+                    b.Property<float>("TaretGlasses")
                         .HasColumnType("real");
 
                     b.Property<string>("UserEmail")
@@ -165,9 +164,6 @@ namespace EF_DietaNoDietaApi.Migrations
                     b.Property<string>("WaterInLtrs")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("WaterPercentage")
-                        .HasColumnType("real");
 
                     b.Property<string>("isCompleted")
                         .HasColumnType("nvarchar(max)");

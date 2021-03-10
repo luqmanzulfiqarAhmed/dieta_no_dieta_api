@@ -127,6 +127,9 @@ namespace EF_DietaNoDietaApi.Controllers
         public async Task<IActionResult> PostGoals([FromBody] DietPlanGoals goals)
         {
             goals.isCompleted = "false";
+            float percent= (float.Parse(goals.CurrentWeight)/ float.Parse(goals.TargetWeight)) * 100 ;
+            goals.WeightPercentage = (int)percent;
+
             await using var transaction = await dbContext.Database.BeginTransactionAsync();
             var user = await dbContext.Users.FindAsync(goals.UserEmail);
             var nutrtionist = await dbContext.Nutritionist.FindAsync(goals.NutrtionistEmail);
@@ -155,8 +158,10 @@ namespace EF_DietaNoDietaApi.Controllers
 
             goals.isCompleted = "false";
             float target = float.Parse(goals.WaterInLtrs);
-            goals.TaretGlasses = 4 * target;
-            goals.PerGlassValue = 1 / goals.TaretGlasses;
+            goals.TargetGlasses = 4 * target;
+            goals.PerGlassValue = 1 / goals.TargetGlasses;
+            goals.GlassesUserDrank = 0;
+            goals.WaterPercentage = 0;
 
             await using var transaction = await dbContext.Database.BeginTransactionAsync();
             var user = await dbContext.Users.FindAsync(goals.UserEmail);
@@ -187,15 +192,23 @@ namespace EF_DietaNoDietaApi.Controllers
 
         [HttpPut]
         [Route("updateWaterGoal")]//http://localhost:5000/api/Authenticate/Register
-        public async Task<IActionResult> updateWaterGoal([FromQuery] String email)
+        public async Task<IActionResult> updateWaterGoal([FromQuery] String email ,[FromQuery] String GlassesUserDrank)
         {
-            DietPlanWaterGoals planWaterGoals = dbContext.DietPlanWaterGoals
+            try
+            {
+                DietPlanWaterGoals planWaterGoals = dbContext.DietPlanWaterGoals
                  .Where(x => x.UserEmail == email && x.isCompleted.Equals( "false")).FirstOrDefault();
             if (planWaterGoals == null)
                 return StatusCode(StatusCodes.Status404NotFound, "Ongoing Water goal against this user not found");
-            planWaterGoals.AcheivedValue += planWaterGoals.PerGlassValue;            
             
-            if(planWaterGoals.AcheivedValue >= 1)
+            planWaterGoals.AcheivedValue += planWaterGoals.PerGlassValue;
+            int glass = int.Parse(GlassesUserDrank);
+            if(planWaterGoals.TargetGlasses > 0)
+            {
+                planWaterGoals.WaterPercentage = (glass /planWaterGoals.TargetGlasses) *100;
+                planWaterGoals.GlassesUserDrank = glass;
+            }
+            if (planWaterGoals.AcheivedValue >= 1)
             {
                 planWaterGoals.isCompleted = "true";
                 return StatusCode(StatusCodes.Status200OK, "Task completed successfully");
@@ -204,6 +217,10 @@ namespace EF_DietaNoDietaApi.Controllers
             await dbContext.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, planWaterGoals.AcheivedValue);
+            }catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status200OK, ex.Message);
+            }
         }
 
         [HttpPut]
@@ -216,6 +233,8 @@ namespace EF_DietaNoDietaApi.Controllers
                 return StatusCode(StatusCodes.Status404NotFound, "Ongoing weight goal against this user not found");
 
             planWeightGoals.CurrentWeight = currentWeight;
+            float percent = (float.Parse(planWeightGoals.CurrentWeight) / float.Parse(planWeightGoals.TargetWeight)) * 100;
+            planWeightGoals.WeightPercentage = (int)percent;
 
             dbContext.DietPlanGoals.Update(planWeightGoals);
             await dbContext.SaveChangesAsync();
@@ -231,12 +250,18 @@ namespace EF_DietaNoDietaApi.Controllers
 
         [HttpGet]
         [Route("GetAllWaterGoals")]
-        public async Task<IActionResult> GetAllWaterGoals([FromQuery] String userEmail)
+        public async Task<IActionResult> GetAllWaterGoals([FromQuery] String userEmail )
         {
-            var goals = await dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == userEmail).ToListAsync();
+            var goals = await dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == userEmail && p.isCompleted == "true").ToListAsync();
             return StatusCode(StatusCodes.Status200OK, goals);
         }
-
+        [HttpGet]
+        [Route("GetOnGoinglWaterGoal")]
+        public  IActionResult GetOnGoingWaterGoal([FromQuery] String userEmail)
+        {
+            var goals =  dbContext.DietPlanWaterGoals.Where(p => p.UserEmail == userEmail && p.isCompleted == "false" ).FirstOrDefault();
+            return StatusCode(StatusCodes.Status200OK, goals);
+        }
         [HttpGet]
         [Route("GetAllGoals")]
         public async Task<IActionResult> GetAllGoals([FromQuery] String nutrtionistEmail, [FromQuery] String isComplete)

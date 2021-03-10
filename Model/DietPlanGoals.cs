@@ -37,6 +37,8 @@ namespace EF_DietaNoDietaApi.Model
         [Required(ErrorMessage = "Current weight is required")]
         public String CurrentWeight { get; set; }
 
+        public int WeightPercentage { get; set; }
+
         [Required(ErrorMessage = "Goal Type is required")]
         public String GoalType { get; set; }
 

@@ -68,6 +68,8 @@ namespace EF_DietaNoDietaApi.Controllers
             wc.QueryString.Add("method", "foods.search");
             wc.QueryString.Add("format", "json");
             wc.QueryString.Add("search_expression", item.item);
+            wc.QueryString.Add("Region", "IT");
+            wc.QueryString.Add("language", "it");
 
             var data = wc.UploadValues(url, "POST", wc.QueryString);
 
